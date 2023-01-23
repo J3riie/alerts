@@ -1,13 +1,14 @@
-package com.safetynet.alerts.dto;
+package com.safetynet.alerts.dto.child;
 
-public class PersonDTO {
+public class ChildAlertDTO {
+
     private String firstName;
 
     private String lastName;
 
-    private String address;
+    private String age;
 
-    private String phone;
+    private String[] famille;
 
     public String getFirstName() {
         return firstName;
@@ -25,20 +26,19 @@ public class PersonDTO {
         this.lastName = lastName;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAge() {
+        return age;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAge(String age) {
+        this.age = age;
     }
 
-    public String getPhone() {
-        return phone;
+    public String[] getFamille() {
+        return famille;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setFamille(String[] famille) {
+        this.famille = famille;
     }
-
 }
