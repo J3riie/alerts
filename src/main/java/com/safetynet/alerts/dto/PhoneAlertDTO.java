@@ -1,4 +1,4 @@
-package com.safetynet.alerts.dto.child;
+package com.safetynet.alerts.dto;
 
 public class PhoneAlertDTO {
 

@@ -1,4 +1,6 @@
-package com.safetynet.alerts.dto.child;
+package com.safetynet.alerts.dto;
+
+import java.util.ArrayList;
 
 public class ChildAlertDTO {
 
@@ -6,9 +8,9 @@ public class ChildAlertDTO {
 
     private String lastName;
 
-    private String age;
+    private int age;
 
-    private String[] famille;
+    private ArrayList<FamilyDTO> family;
 
     public String getFirstName() {
         return firstName;
@@ -26,19 +28,19 @@ public class ChildAlertDTO {
         this.lastName = lastName;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public String[] getFamille() {
-        return famille;
+    public ArrayList<FamilyDTO> getFamily() {
+        return family;
     }
 
-    public void setFamille(String[] famille) {
-        this.famille = famille;
+    public void setFamily(ArrayList<FamilyDTO> family) {
+        this.family = family;
     }
 }

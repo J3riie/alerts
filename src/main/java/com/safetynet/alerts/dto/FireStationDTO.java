@@ -1,6 +1,6 @@
-package com.safetynet.alerts.dto.parent;
+package com.safetynet.alerts.dto;
 
-public class PersonDTO {
+public class FireStationDTO {
 
     private String firstName;
 
@@ -8,13 +8,9 @@ public class PersonDTO {
 
     private String address;
 
-    private String city;
-
-    private String zip;
-
     private String phone;
 
-    private String email;
+    private boolean isAdult;
 
     public String getFirstName() {
         return firstName;
@@ -40,22 +36,6 @@ public class PersonDTO {
         this.address = address;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -64,12 +44,11 @@ public class PersonDTO {
         this.phone = phone;
     }
 
-    public String getEmail() {
-        return email;
+    public boolean isAdult() {
+        return isAdult;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAdult(boolean isAdult) {
+        this.isAdult = isAdult;
     }
-
 }
