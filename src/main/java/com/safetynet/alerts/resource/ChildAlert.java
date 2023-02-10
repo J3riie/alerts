@@ -1,10 +1,12 @@
 package com.safetynet.alerts.resource;
 
+import static java.time.ZoneId.systemDefault;
 import static org.springframework.http.HttpStatus.OK;
 
-import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.dto.ChildAlertDTO;
-import com.safetynet.alerts.dto.FamilyDTO;
+import com.safetynet.alerts.App;
+import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
+import com.safetynet.alerts.dto.node.PersonsDTO;
+import com.safetynet.alerts.dto.resource.ChildAlertDTO;
+import com.safetynet.alerts.dto.response.ChildResponse;
+import com.safetynet.alerts.dto.response.FamilyResponse;
 
 @RestController
 @RequestMapping(value = "/childAlert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -26,55 +30,57 @@ public class ChildAlert {
     private static final Logger logger = LogManager.getLogger(ChildAlert.class);
 
     @GetMapping
-    ResponseEntity<ArrayList<ChildAlertDTO>> index(@RequestParam(name = "address") String address) {
-        try (final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("data.json")) {
-            logger.info("List of the children living at {} and their family :", address);
-            final ObjectMapper objectMapper = new ObjectMapper();
-            final JsonNode node = objectMapper.readTree(in);
+    ResponseEntity<ChildAlertDTO> index(@RequestParam(name = "address") String address) {
+        logger.info("List of the children living at {} and their family :", address);
+        final ArrayList<FamilyResponse> family = getFamilyMembersFromAddress(address);
+        final ArrayList<ChildResponse> children = getChildrenFromFamily(family);
 
-            final JsonNode persons = node.get("persons");
-            final ArrayList<FamilyDTO> family = new ArrayList<>();
-            persons.forEach(e -> getFamilyMembersFromAddress(address, family, e));
+        final ChildAlertDTO response = new ChildAlertDTO();
+        response.setChildren(children);
 
-            final JsonNode medicalRecords = node.get("medicalrecords");
-            final ArrayList<ChildAlertDTO> children = new ArrayList<>();
-            medicalRecords.forEach(e -> getChildrenFromFamily(family, children, e));
-
-            for (final ChildAlertDTO c : children) {
-                logger.info("{} {} {} {}", c.getFirstName(), c.getLastName(), c.getAge(), c.getFamily());
+        for (final ChildResponse c : children) {
+            logger.info("{} {} {}", c.getFirstName(), c.getLastName(), c.getAge());
+            logger.info("Family :");
+            for (final FamilyResponse f : c.getFamily()) {
+                logger.info("{} {}", f.getFirstName(), f.getLastName());
             }
-            return ResponseEntity.status(OK).body(children);
-        } catch (final Exception e) {
-            logger.error("Json file not reachable/not present in the classpath", e);
-            return ResponseEntity.status(500).body(null);
         }
+        return ResponseEntity.status(OK).body(response);
     }
 
-    private void getFamilyMembersFromAddress(String address, ArrayList<FamilyDTO> family, JsonNode e) {
-        if (e.get("address").asText().equals(address)) {
-            final FamilyDTO member = new FamilyDTO();
-            member.setFirstName(e.get("firstName").asText());
-            member.setLastName(e.get("lastName").asText());
-            family.add(member);
+    private ArrayList<FamilyResponse> getFamilyMembersFromAddress(String address) {
+        final ArrayList<FamilyResponse> family = new ArrayList<>();
+        for (final PersonsDTO p : App.getPersons()) {
+            if (p.getAddress().equals(address)) {
+                final FamilyResponse member = new FamilyResponse();
+                member.setFirstName(p.getFirstName());
+                member.setLastName(p.getLastName());
+                family.add(member);
+            }
         }
+        return family;
     }
 
-    private void getChildrenFromFamily(ArrayList<FamilyDTO> family, ArrayList<ChildAlertDTO> children, JsonNode e) {
-        for (final FamilyDTO member : family) {
-            if (e.get("firstName").asText().equals(member.getFirstName()) && e.get("lastName").asText().equals(member.getLastName())) {
-                final String birthDateAsString = e.get("birthdate").asText();
-                final String[] splitBirthDate = birthDateAsString.split("/");
-                final int birthYear = Integer.parseInt(splitBirthDate[2]);
-                final int actualYear = Calendar.getInstance().get(Calendar.YEAR);
-                if (actualYear - birthYear < 18) {
-                    final ChildAlertDTO child = new ChildAlertDTO();
-                    child.setFirstName(member.getFirstName());
-                    child.setLastName(member.getLastName());
-                    child.setAge(actualYear - birthYear);
-                    child.setFamily(family);
-                    children.add(child);
+    private ArrayList<ChildResponse> getChildrenFromFamily(List<FamilyResponse> family) {
+        final ArrayList<ChildResponse> children = new ArrayList<>();
+        for (final FamilyResponse member : family) {
+            for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+                if (m.getFirstName().equals(member.getFirstName()) && m.getLastName().equals(member.getLastName())) {
+                    final LocalDate birthDate = m.getBirthdate().toInstant().atZone(systemDefault()).toLocalDate();
+                    final LocalDate now = LocalDate.now();
+                    final long yearsBetween = ChronoUnit.YEARS.between(birthDate, now);
+                    final int age = (int) yearsBetween;
+                    if (age < 18) {
+                        final ChildResponse child = new ChildResponse();
+                        child.setFirstName(member.getFirstName());
+                        child.setLastName(member.getLastName());
+                        child.setAge(age);
+                        child.setFamily(family);
+                        children.add(child);
+                    }
                 }
             }
         }
+        return children;
     }
 }

@@ -1,16 +1,16 @@
-package com.safetynet.alerts.dto;
+package com.safetynet.alerts.dto.response;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class ChildAlertDTO {
+public class ChildResponse {
 
     private String firstName;
 
     private String lastName;
 
-    private int age;
+    private long age;
 
-    private ArrayList<FamilyDTO> family;
+    private List<FamilyResponse> family;
 
     public String getFirstName() {
         return firstName;
@@ -28,19 +28,20 @@ public class ChildAlertDTO {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public long getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(long age) {
         this.age = age;
     }
 
-    public ArrayList<FamilyDTO> getFamily() {
+    public List<FamilyResponse> getFamily() {
         return family;
     }
 
-    public void setFamily(ArrayList<FamilyDTO> family) {
+    public void setFamily(List<FamilyResponse> family) {
         this.family = family;
     }
+
 }

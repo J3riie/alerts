@@ -1,6 +1,6 @@
-package com.safetynet.alerts.dto;
+package com.safetynet.alerts.dto.response;
 
-public class FireStationDTO {
+public class CoveredPersonResponse {
 
     private String firstName;
 
@@ -9,8 +9,6 @@ public class FireStationDTO {
     private String address;
 
     private String phone;
-
-    private boolean isAdult;
 
     public String getFirstName() {
         return firstName;
@@ -42,13 +40,5 @@ public class FireStationDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public boolean isAdult() {
-        return isAdult;
-    }
-
-    public void setAdult(boolean isAdult) {
-        this.isAdult = isAdult;
     }
 }

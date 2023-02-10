@@ -2,8 +2,8 @@ package com.safetynet.alerts.resource;
 
 import static org.springframework.http.HttpStatus.OK;
 
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.dto.PhoneAlertDTO;
+import com.safetynet.alerts.App;
+import com.safetynet.alerts.dto.node.FireStationsDTO;
+import com.safetynet.alerts.dto.node.PersonsDTO;
+import com.safetynet.alerts.dto.resource.PhoneAlertDTO;
 
 import jakarta.validation.constraints.Min;
 
@@ -28,43 +29,40 @@ public class PhoneAlert {
     private static final Logger logger = LogManager.getLogger(PhoneAlert.class);
 
     @GetMapping
-    ResponseEntity<ArrayList<PhoneAlertDTO>> index(
+    ResponseEntity<PhoneAlertDTO> index(
             @RequestParam(name = "firestation") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
-        try (final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("data.json")) {
-            logger.info("List of phone number of the persons covered by the firestation number {} :", stationNumber);
-            final ObjectMapper objectMapper = new ObjectMapper();
-            final JsonNode node = objectMapper.readTree(in);
-            final JsonNode firestations = node.get("firestations");
-            final ArrayList<String> addresses = new ArrayList<>();
-            firestations.forEach(e -> getAddressesFromStation(stationNumber, addresses, e));
+        logger.info("List of phone number of the persons covered by the firestation number {} :", stationNumber);
+        final ArrayList<String> addresses = getAddressesFromStation(stationNumber);
+        final ArrayList<String> phones = getPhonesFromAddresses(addresses);
 
-            final JsonNode persons = node.get("persons");
-            final ArrayList<PhoneAlertDTO> phones = new ArrayList<>();
-            persons.forEach(e -> getPhonesFromAddresses(addresses, phones, e));
+        final PhoneAlertDTO response = new PhoneAlertDTO();
+        response.setPhones(phones);
 
-            for (final PhoneAlertDTO p : phones) {
-                logger.info("{}", p.getPhone());
+        for (final String p : phones) {
+            logger.info("{}", p);
+        }
+        return ResponseEntity.status(OK).body(response);
+    }
+
+    private ArrayList<String> getAddressesFromStation(int stationNumber) {
+        final ArrayList<String> addresses = new ArrayList<>();
+        for (final FireStationsDTO f : App.getFirestations()) {
+            if (f.getStation() == stationNumber) {
+                addresses.add(f.getAddress());
             }
-            return ResponseEntity.status(OK).body(phones);
-        } catch (final Exception e) {
-            logger.error("Json file not reachable/not present in the classpath", e);
-            return ResponseEntity.status(500).body(null);
         }
+        return addresses;
     }
 
-    private void getAddressesFromStation(int stationNumber, ArrayList<String> addresses, JsonNode e) {
-        if (e.get("station").asInt() == stationNumber) {
-            addresses.add(e.get("address").asText());
-        }
-    }
-
-    private void getPhonesFromAddresses(ArrayList<String> addresses, ArrayList<PhoneAlertDTO> phones, JsonNode e) {
+    private ArrayList<String> getPhonesFromAddresses(List<String> addresses) {
+        final ArrayList<String> phones = new ArrayList<>();
         for (final String address : addresses) {
-            if (e.get("address").asText().equals(address)) {
-                final PhoneAlertDTO phone = new PhoneAlertDTO();
-                phone.setPhone(e.get("phone").asText());
-                phones.add(phone);
+            for (final PersonsDTO p : App.getPersons()) {
+                if (p.getAddress().equals(address)) {
+                    phones.add(p.getPhone());
+                }
             }
         }
+        return phones;
     }
 }

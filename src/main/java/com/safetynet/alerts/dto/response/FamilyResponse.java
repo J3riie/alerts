@@ -1,6 +1,6 @@
-package com.safetynet.alerts.dto;
+package com.safetynet.alerts.dto.response;
 
-public class FamilyDTO {
+public class FamilyResponse {
 
     private String firstName;
 

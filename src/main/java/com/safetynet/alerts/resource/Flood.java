@@ -21,35 +21,53 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
-import com.safetynet.alerts.dto.resource.FireDTO;
+import com.safetynet.alerts.dto.resource.StationsDTO;
+import com.safetynet.alerts.dto.response.CoveredHouseResponse;
 import com.safetynet.alerts.dto.response.InhabitantResponse;
 import com.safetynet.alerts.dto.response.MedicalHistory;
 
 @RestController
-@RequestMapping(value = "/fire", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class Fire {
-    private static final Logger logger = LogManager.getLogger(Fire.class);
+@RequestMapping(value = "/flood", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+public class Flood {
+    private static final Logger logger = LogManager.getLogger(Flood.class);
 
-    @GetMapping
-    ResponseEntity<FireDTO> index(@RequestParam(name = "address") String address) {
-        logger.info("List of the persons living at {}, their medical history and the station covering them :", address);
-        final int stationNumber = getFirestationNumberFromAddress(address);
-        final ArrayList<InhabitantResponse> inhabitants = getInfoFromAddress(address);
-        setPersonsMedicalHistory(inhabitants);
+    @GetMapping(value = "/stations")
+    ResponseEntity<StationsDTO> stations(@RequestParam(name = "stations") List<Integer> stations) {
+        logger.info("List of the persons covered by one of the stations number {} with their medical history :", stations);
+        final ArrayList<String> stationAddresses = getFirestationAddressesFromNumbers(stations);
 
-        final FireDTO response = new FireDTO();
-        response.setInhabitants(inhabitants);
-        response.setCoveringStation(stationNumber);
-
-        for (final InhabitantResponse i : inhabitants) {
-            logger.info("{} {} {} {} {}", i.getFirstName(), i.getLastName(), i.getPhone(), i.getAge(), i.getMedicalHistory());
+        final ArrayList<CoveredHouseResponse> coveredHouses = new ArrayList<>();
+        for (final String s : stationAddresses) {
+            final ArrayList<InhabitantResponse> inhabitants = getInfoFromAddress(s);
+            setPersonsMedicalHistory(inhabitants);
+            final CoveredHouseResponse coveredHouse = new CoveredHouseResponse();
+            coveredHouse.setAddress(s);
+            coveredHouse.setInhabitants(inhabitants);
+            coveredHouses.add(coveredHouse);
         }
-        if (stationNumber == -1) {
-            logger.error("The referenced address isn't covered by any station");
-        } else {
-            logger.info("Firestation serving {} is the station number {}.", address, stationNumber);
+
+        final StationsDTO response = new StationsDTO();
+        response.setCoveredHouses(coveredHouses);
+
+        for (final CoveredHouseResponse c : coveredHouses) {
+            logger.info("{}", c.getAddress());
+            for (final InhabitantResponse i : c.getInhabitants()) {
+                logger.info("{} {} {} {} {}", i.getFirstName(), i.getLastName(), i.getPhone(), i.getAge(), i.getMedicalHistory());
+            }
         }
         return ResponseEntity.status(OK).body(response);
+    }
+
+    private ArrayList<String> getFirestationAddressesFromNumbers(List<Integer> stations) {
+        final ArrayList<String> stationAddresses = new ArrayList<>();
+        for (final int s : stations) {
+            for (final FireStationsDTO f : App.getFirestations()) {
+                if (f.getStation() == s && !stationAddresses.contains(f.getAddress())) {
+                    stationAddresses.add(f.getAddress());
+                }
+            }
+        }
+        return stationAddresses;
     }
 
     private ArrayList<InhabitantResponse> getInfoFromAddress(String address) {
@@ -88,15 +106,6 @@ public class Fire {
                 }
             }
         }
-    }
-
-    private int getFirestationNumberFromAddress(String address) {
-        for (final FireStationsDTO f : App.getFirestations()) {
-            if (f.getAddress().equals(address)) {
-                return f.getStation();
-            }
-        }
-        return -1;
     }
 
 }
