@@ -1,0 +1,587 @@
+{
+	"info": {
+		"_postman_id": "d5c2bc76-7408-449c-beb1-9b783dda3127",
+		"name": "P5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16931162"
+	},
+	"item": [
+		{
+			"name": "Endpoints",
+			"item": [
+				{
+					"name": "New Person",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Robin\",\r\n    \"lastName\": \"Hugues\",\r\n    \"address\": \"an address\",\r\n    \"city\": \"Culver\",\r\n    \"zip\": 97451,\r\n    \"phone\": \"000000\",\r\n    \"email\": \"a@a.a\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/api/person",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"person"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Person",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/person?firstName=Robin&lastName=Hugues&email=brandnew@email.com",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"person"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Robin"
+								},
+								{
+									"key": "lastName",
+									"value": "Hugues"
+								},
+								{
+									"key": "email",
+									"value": "brandnew@email.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Person",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/person?firstName=Robin&lastName=Hugues",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"person"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Robin"
+								},
+								{
+									"key": "lastName",
+									"value": "Hugues"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Firestation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/firestation?address=11 rue du palais&station=3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"firestation"
+							],
+							"query": [
+								{
+									"key": "address",
+									"value": "11 rue du palais"
+								},
+								{
+									"key": "station",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Firestation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/firestation?address=1509 Culver St&station=1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"firestation"
+							],
+							"query": [
+								{
+									"key": "address",
+									"value": "1509 Culver St"
+								},
+								{
+									"key": "station",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Firestation",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/firestation?address=11 rue du palais",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"firestation"
+							],
+							"query": [
+								{
+									"key": "address",
+									"value": "11 rue du palais"
+								},
+								{
+									"key": "station",
+									"value": "3",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Medical Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/medicalRecord?firstName=Robin&lastName=Hugues&birthdate=10/24/1998&medications=medoc 1, medoc 2&allergies=pollen, efferalgan",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"medicalRecord"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Robin"
+								},
+								{
+									"key": "lastName",
+									"value": "Hugues"
+								},
+								{
+									"key": "birthdate",
+									"value": "10/24/1998"
+								},
+								{
+									"key": "medications",
+									"value": "medoc 1, medoc 2"
+								},
+								{
+									"key": "allergies",
+									"value": "pollen, efferalgan"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Medical Record",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/medicalRecord?firstName=Robin&lastName=Hugues&medications=medoc 3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"medicalRecord"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Robin"
+								},
+								{
+									"key": "lastName",
+									"value": "Hugues"
+								},
+								{
+									"key": "medications",
+									"value": "medoc 3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Medical Record",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/medicalRecord?firstName=Robin&lastName=Hugues",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"medicalRecord"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Robin"
+								},
+								{
+									"key": "lastName",
+									"value": "Hugues"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "firestation",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/api/firestation?stationNumber=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"firestation"
+					],
+					"query": [
+						{
+							"key": "stationNumber",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "childAlert",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/api/childAlert?address=1509 Culver St",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"childAlert"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "1509 Culver St"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "phoneAlert",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/phoneAlert?firestation=2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"phoneAlert"
+					],
+					"query": [
+						{
+							"key": "firestation",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fire",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/fire?address=1509 Culver Stdd",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"fire"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "1509 Culver Stdd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "flood/stations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/flood/stations?stations=1,2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"flood",
+						"stations"
+					],
+					"query": [
+						{
+							"key": "stations",
+							"value": "1,2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "communityEmail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/communityEmail?city=Culver",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"communityEmail"
+					],
+					"query": [
+						{
+							"key": "city",
+							"value": "Culver"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "personInfo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/personInfo?firstName=Robin&lastName=Hugues",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"personInfo"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "Robin"
+						},
+						{
+							"key": "lastName",
+							"value": "Hugues"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
