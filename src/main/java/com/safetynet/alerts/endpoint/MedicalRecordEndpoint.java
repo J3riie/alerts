@@ -22,7 +22,7 @@ import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 public class MedicalRecordEndpoint {
     private static final Logger logger = LogManager.getLogger(MedicalRecordEndpoint.class);
 
-    @PostMapping(value = "/post")
+    @PostMapping
     void post(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName,
             @RequestParam(name = "birthdate") Date birthdate, @RequestParam(required = false, name = "medications") List<String> medications,
             @RequestParam(required = false, name = "allergies") List<String> allergies) {
@@ -38,7 +38,7 @@ public class MedicalRecordEndpoint {
         App.getDataJson().setMedicalrecords(medicalRecords);
     }
 
-    @PutMapping(value = "/put")
+    @PutMapping
     void put(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName,
             @RequestParam(required = false, name = "birthdate") Date birthdate, @RequestParam(required = false, name = "medications") List<String> medications,
             @RequestParam(required = false, name = "allergies") List<String> allergies) {
@@ -60,7 +60,7 @@ public class MedicalRecordEndpoint {
         App.getDataJson().setMedicalrecords(medicalRecords);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping
     void delete(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
         logger.info("Deleting {} {}'s medical record from the data", firstName, lastName);
         final ArrayList<MedicalRecordsDTO> medicalRecords = new ArrayList<>(App.getMedicalrecords());

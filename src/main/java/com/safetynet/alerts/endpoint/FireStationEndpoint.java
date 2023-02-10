@@ -20,7 +20,7 @@ import com.safetynet.alerts.dto.node.FireStationsDTO;
 public class FireStationEndpoint {
     private static final Logger logger = LogManager.getLogger(FireStationEndpoint.class);
 
-    @PostMapping(value = "/post")
+    @PostMapping
     void post(@RequestParam(name = "address") String address, @RequestParam(name = "station") Integer station) {
         logger.info("Adding a new station - address mapping in the data");
         final ArrayList<FireStationsDTO> firestations = new ArrayList<>(App.getFirestations());
@@ -31,7 +31,7 @@ public class FireStationEndpoint {
         App.getDataJson().setFirestations(firestations);
     }
 
-    @PutMapping(value = "/put")
+    @PutMapping
     void put(@RequestParam(name = "address") String address, @RequestParam(name = "station") Integer station) {
         logger.info("Modifying the station for address {}", address);
         final ArrayList<FireStationsDTO> firestations = new ArrayList<>(App.getFirestations());
@@ -43,7 +43,7 @@ public class FireStationEndpoint {
         App.getDataJson().setFirestations(firestations);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping
     void delete(@RequestParam(required = false, name = "address") String address, @RequestParam(required = false, name = "station") Integer station) {
         if (address == null && station == null) {
             logger.error("Use one and only one parameter to get the corresponding mapping to be deleted.");

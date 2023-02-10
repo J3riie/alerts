@@ -1,7 +1,6 @@
 package com.safetynet.alerts.resource;
 
 import static java.time.ZoneId.systemDefault;
-import static org.springframework.http.HttpStatus.OK;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -10,8 +9,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +20,7 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.resource.ChildAlertDTO;
+import com.safetynet.alerts.dto.response.APIResponse;
 import com.safetynet.alerts.dto.response.ChildResponse;
 import com.safetynet.alerts.dto.response.FamilyResponse;
 
@@ -30,7 +30,7 @@ public class ChildAlert {
     private static final Logger logger = LogManager.getLogger(ChildAlert.class);
 
     @GetMapping
-    ResponseEntity<ChildAlertDTO> index(@RequestParam(name = "address") String address) {
+    APIResponse<ChildAlertDTO> index(@RequestParam(name = "address") String address) {
         logger.info("List of the children living at {} and their family :", address);
         final ArrayList<FamilyResponse> family = getFamilyMembersFromAddress(address);
         final ArrayList<ChildResponse> children = getChildrenFromFamily(family);
@@ -45,7 +45,7 @@ public class ChildAlert {
                 logger.info("{} {}", f.getFirstName(), f.getLastName());
             }
         }
-        return ResponseEntity.status(OK).body(response);
+        return new APIResponse<>(HttpStatus.OK.value(), "List of the children living at given address and their family");
     }
 
     private ArrayList<FamilyResponse> getFamilyMembersFromAddress(String address) {

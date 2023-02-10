@@ -6,30 +6,46 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "firstName", "lastName", "address", "city", "zip", "phone", "email" })
 public class PersonsDTO {
 
     @JsonProperty("firstName")
+    @NotBlank
     private String firstName;
 
     @JsonProperty("lastName")
+    @NotBlank
     private String lastName;
 
     @JsonProperty("address")
+    @NotBlank
     private String address;
 
     @JsonProperty("city")
+    @NotBlank
     private String city;
 
     @JsonProperty("zip")
-    private int zip;
+    @NotNull
+    private Integer zip;
 
     @JsonProperty("phone")
+    @NotBlank
     private String phone;
 
     @JsonProperty("email")
+    @Email(message = "Please use a valid mail")
+    @NotBlank
     private String email;
+
+    public boolean personExists(String firstName, String lastName) {
+        return this.firstName.equals(firstName) && this.lastName.equals(lastName);
+    }
 
     public String getFirstName() {
         return firstName;
