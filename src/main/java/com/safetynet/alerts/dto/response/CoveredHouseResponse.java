@@ -2,10 +2,14 @@ package com.safetynet.alerts.dto.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CoveredHouseResponse {
 
+    @JsonProperty("address")
     private String address;
 
+    @JsonProperty("inhabitants")
     private List<InhabitantResponse> inhabitants;
 
     public String getAddress() {

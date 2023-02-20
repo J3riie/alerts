@@ -45,7 +45,7 @@ public class ChildAlert {
                 logger.info("{} {}", f.getFirstName(), f.getLastName());
             }
         }
-        return new APIResponse<>(HttpStatus.OK.value(), "List of the children living at given address and their family");
+        return new APIResponse<>(HttpStatus.OK.value(), String.format("List of the children living at %s and their family", address));
     }
 
     private ArrayList<FamilyResponse> getFamilyMembersFromAddress(String address) {

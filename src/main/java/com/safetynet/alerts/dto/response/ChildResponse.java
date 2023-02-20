@@ -2,14 +2,20 @@ package com.safetynet.alerts.dto.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ChildResponse {
 
+    @JsonProperty("first_name")
     private String firstName;
 
+    @JsonProperty("last_name")
     private String lastName;
 
+    @JsonProperty("age")
     private long age;
 
+    @JsonProperty("family")
     private List<FamilyResponse> family;
 
     public String getFirstName() {

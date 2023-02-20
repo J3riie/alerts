@@ -2,10 +2,14 @@ package com.safetynet.alerts.dto.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MedicalHistory {
 
+    @JsonProperty("medications")
     private List<String> medications;
 
+    @JsonProperty("allergies")
     private List<String> allergies;
 
     public List<String> getMedications() {

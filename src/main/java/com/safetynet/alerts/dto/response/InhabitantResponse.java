@@ -1,15 +1,22 @@
 package com.safetynet.alerts.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class InhabitantResponse {
 
+    @JsonProperty("first_name")
     private String firstName;
 
+    @JsonProperty("last_name")
     private String lastName;
 
+    @JsonProperty("phone")
     private String phone;
 
+    @JsonProperty("age")
     private int age;
 
+    @JsonProperty("medical_history")
     private MedicalHistory medicalHistory;
 
     public String getFirstName() {
