@@ -6,18 +6,33 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "address", "station" })
 public class FireStationsDTO {
 
     @JsonProperty("address")
+    @NotBlank
     private String address;
 
     @JsonProperty("station")
-    private int station;
+    @NotNull
+    @Min(value = 1)
+    private Integer station;
 
     public String getAddress() {
         return address;
+    }
+
+    public boolean addressMappingExists(String address) {
+        return this.address.equals(address);
+    }
+
+    public boolean stationMappingExists(Integer station) {
+        return this.station.equals(station);
     }
 
     public void setAddress(String address) {

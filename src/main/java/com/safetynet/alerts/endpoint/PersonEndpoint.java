@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.response.APIResponse;
 import com.safetynet.alerts.service.PersonService;
@@ -45,24 +44,7 @@ public class PersonEndpoint {
             @RequestParam(required = false, name = "zip") Integer zip, @RequestParam(required = false, name = "phone") String phone,
             @RequestParam(required = false, name = "email") String email) {
         logger.info("Modifying {} {}", firstName, lastName);
-        final PersonsDTO person = App.getPersons().stream().filter(p -> p.personExists(firstName, lastName)).findFirst().map(p -> {
-            if (address != null) {
-                p.setAddress(address);
-            }
-            if (city != null) {
-                p.setCity(city);
-            }
-            if (zip != null) {
-                p.setZip(zip);
-            }
-            if (phone != null) {
-                p.setPhone(phone);
-            }
-            if (email != null) {
-                p.setEmail(email);
-            }
-            return p;
-        }).orElse(null);
+        final PersonsDTO person = personService.modifyPerson(firstName, lastName, address, city, zip, phone, email);
         if (person == null) {
             return new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Unable to modify person : not found");
         }
@@ -72,9 +54,8 @@ public class PersonEndpoint {
     @DeleteMapping
     APIResponse<Void> deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
         logger.info("Deleting {} {} from the data", firstName, lastName);
-        final Optional<PersonsDTO> optionalPerson = App.getPersons().stream().filter(p -> p.personExists(firstName, lastName)).findFirst();
+        final Optional<PersonsDTO> optionalPerson = personService.deletePerson(firstName, lastName);
         if (optionalPerson.isPresent()) {
-            App.getPersons().remove(optionalPerson.get());
             return new APIResponse<>(HttpStatus.OK.value(), "Person deleted successfully");
         }
         return new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Unable to delete person : not found");
