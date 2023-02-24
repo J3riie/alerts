@@ -1,75 +1,63 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
+import com.safetynet.alerts.dto.response.APIResponse;
+import com.safetynet.alerts.service.MedicalRecordService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/medicalRecord", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MedicalRecordEndpoint {
     private static final Logger logger = LogManager.getLogger(MedicalRecordEndpoint.class);
 
+    @Autowired
+    private MedicalRecordService medicalRecordService;
+
     @PostMapping
-    void post(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName,
-            @RequestParam(name = "birthdate") Date birthdate, @RequestParam(required = false, name = "medications") List<String> medications,
-            @RequestParam(required = false, name = "allergies") List<String> allergies) {
+    APIResponse<Void> addMedicalRecord(@RequestBody @Valid MedicalRecordsDTO newMedicalRecord) {
         logger.info("Adding a new medical record in the data");
-        final ArrayList<MedicalRecordsDTO> medicalRecords = new ArrayList<>(App.getMedicalrecords());
-        final MedicalRecordsDTO medicalRecordToPost = new MedicalRecordsDTO();
-        medicalRecordToPost.setFirstName(firstName);
-        medicalRecordToPost.setLastName(lastName);
-        medicalRecordToPost.setBirthdate(birthdate);
-        medicalRecordToPost.setMedications(medications);
-        medicalRecordToPost.setAllergies(allergies);
-        medicalRecords.add(medicalRecordToPost);
-        App.getDataJson().setMedicalrecords(medicalRecords);
+        medicalRecordService.addMedicalRecord(newMedicalRecord);
+        return new APIResponse<>(HttpStatus.CREATED.value(),
+                String.format("%s %s's medical record added successfully", newMedicalRecord.getFirstName(), newMedicalRecord.getLastName()));
     }
 
     @PutMapping
-    void put(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName,
+    APIResponse<Void> modifyMedicalRecord(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName,
             @RequestParam(required = false, name = "birthdate") Date birthdate, @RequestParam(required = false, name = "medications") List<String> medications,
             @RequestParam(required = false, name = "allergies") List<String> allergies) {
         logger.info("Modifying {} {}'s medical record", firstName, lastName);
-        final ArrayList<MedicalRecordsDTO> medicalRecords = new ArrayList<>(App.getMedicalrecords());
-        for (final MedicalRecordsDTO m : medicalRecords) {
-            if (m.getFirstName().equals(firstName) && m.getLastName().equals(lastName)) {
-                if (birthdate != null) {
-                    m.setBirthdate(birthdate);
-                }
-                if (medications != null) {
-                    m.setMedications(medications);
-                }
-                if (allergies != null) {
-                    m.setAllergies(allergies);
-                }
-            }
+        final MedicalRecordsDTO medicalRecord = medicalRecordService.modifyMedicalRecord(firstName, lastName, birthdate, medications, allergies);
+        if (medicalRecord == null) {
+            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), String.format("Unable to modify %s %s's medical record : not found", firstName, lastName));
         }
-        App.getDataJson().setMedicalrecords(medicalRecords);
+        return new APIResponse<>(HttpStatus.NO_CONTENT.value(), String.format("%s %s's medical record modified successfully", firstName, lastName));
     }
 
     @DeleteMapping
-    void delete(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+    APIResponse<Void> deleteMedicalRecord(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
         logger.info("Deleting {} {}'s medical record from the data", firstName, lastName);
-        final ArrayList<MedicalRecordsDTO> medicalRecords = new ArrayList<>(App.getMedicalrecords());
-        for (final MedicalRecordsDTO m : medicalRecords) {
-            if (m.getFirstName().equals(firstName) && m.getLastName().equals(lastName)) {
-                medicalRecords.remove(m);
-                break;
-            }
+        final Optional<MedicalRecordsDTO> optionalMedicalRecord = medicalRecordService.deleteMedicalRecord(firstName, lastName);
+        if (optionalMedicalRecord.isPresent()) {
+            return new APIResponse<>(HttpStatus.OK.value(), String.format("%s %s's medical record deleted successfully", firstName, lastName));
         }
-        App.getDataJson().setMedicalrecords(medicalRecords);
+        return new APIResponse<>(HttpStatus.NOT_FOUND.value(), String.format("Unable to delete %s %s's medical record : not found", firstName, lastName));
     }
 }

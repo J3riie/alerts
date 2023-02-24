@@ -64,7 +64,7 @@ public class ChildAlert {
     private ArrayList<ChildResponse> getChildrenFromFamily(List<FamilyResponse> family) {
         final ArrayList<ChildResponse> children = new ArrayList<>();
         for (final FamilyResponse member : family) {
-            for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+            for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(member.getFirstName()) && m.getLastName().equals(member.getLastName())) {
                     final LocalDate birthDate = m.getBirthdate().toInstant().atZone(systemDefault()).toLocalDate();
                     final LocalDate now = LocalDate.now();

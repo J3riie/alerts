@@ -87,7 +87,7 @@ public class FireStation {
     private int[] getNumberOfAdultsAndChildren(List<CoveredPersonResponse> personsCovered) {
         final int[] numberOfAdultsAndChildren = { 0, 0 };
         for (final CoveredPersonResponse p : personsCovered) {
-            for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+            for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(p.getFirstName()) && m.getLastName().equals(p.getLastName())) {
                     final LocalDate birthDate = m.getBirthdate().toInstant().atZone(systemDefault()).toLocalDate();
                     final LocalDate now = LocalDate.now();

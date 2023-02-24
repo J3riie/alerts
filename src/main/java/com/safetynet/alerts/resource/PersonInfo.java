@@ -53,7 +53,7 @@ public class PersonInfo {
                 person.setLastName(p.getLastName());
                 person.setAddress(p.getAddress());
                 person.setEmailAddress(p.getEmail());
-                for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+                for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                     if (m.getFirstName().equals(firstName) && m.getLastName().equals(lastName)) {
                         final LocalDate birthDate = m.getBirthdate().toInstant().atZone(systemDefault()).toLocalDate();
                         final LocalDate now = LocalDate.now();
@@ -70,7 +70,7 @@ public class PersonInfo {
 
     private void setPersonsMedicalHistory(List<PersonResponse> persons) {
         for (final PersonResponse p : persons) {
-            for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+            for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(p.getFirstName()) && m.getLastName().equals(p.getLastName())) {
                     final MedicalHistory medicationResponse = new MedicalHistory();
                     medicationResponse.setMedications(m.getMedications());

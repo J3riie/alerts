@@ -33,7 +33,8 @@ public class FireStationEndpoint {
     APIResponse<Void> addFireStation(@RequestBody @Valid FireStationsDTO newStation) {
         logger.info("Adding a new station - address mapping in the data");
         fireStationService.addFireStation(newStation);
-        return new APIResponse<>(HttpStatus.CREATED.value(), "Station - address mapped successfully");
+        return new APIResponse<>(HttpStatus.CREATED.value(),
+                String.format("Station %d mapped successfully with address %s", newStation.getStation(), newStation.getAddress()));
     }
 
     @PutMapping
@@ -53,16 +54,16 @@ public class FireStationEndpoint {
             logger.info("Deleting the mapping(s) for station {}", station);
             final boolean isPresent = fireStationService.deleteFireStation(station);
             if (isPresent) {
-                return new APIResponse<>(HttpStatus.OK.value(), "Mapping deleted successfully");
+                return new APIResponse<>(HttpStatus.OK.value(), String.format("Mapping successfully deleted for station number %d", station));
             }
-            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Unable to delete mapping : not found");
+            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), String.format("Unable to delete mapping : no mapping found for station number %d", station));
         } else if (station == null) {
             logger.info("Deleting the mapping for address {}", address);
             final Optional<FireStationsDTO> optionalFirestation = fireStationService.deleteFireStation(address);
             if (optionalFirestation.isPresent()) {
-                return new APIResponse<>(HttpStatus.OK.value(), "Mapping deleted successfully");
+                return new APIResponse<>(HttpStatus.OK.value(), String.format("Mapping successfully deleted for address %s", address));
             }
-            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Unable to delete mapping : not found");
+            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), String.format("Unable to delete mapping : no mapping found for address %s", address));
         } else {
             return new APIResponse<>(HttpStatus.BAD_REQUEST.value(), "Use one and only one parameter to get the corresponding mapping to be deleted.");
         }

@@ -28,6 +28,10 @@ public class MedicalRecordsDTO {
     @JsonProperty("allergies")
     private List<String> allergies = new ArrayList<>();
 
+    public boolean medicalRecordExists(String firstName, String lastName) {
+        return this.firstName.equals(firstName) && this.lastName.equals(lastName);
+    }
+
     public String getFirstName() {
         return firstName;
     }

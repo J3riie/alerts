@@ -61,7 +61,7 @@ public class App implements CommandLineRunner {
         return dataJson.getPersons();
     }
 
-    public static List<MedicalRecordsDTO> getMedicalrecords() {
+    public static List<MedicalRecordsDTO> getMedicalRecords() {
         return dataJson.getMedicalrecords();
     }
 

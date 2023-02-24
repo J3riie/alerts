@@ -82,7 +82,7 @@ public class Flood {
             }
         }
         for (final InhabitantResponse i : inhabitants) {
-            for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+            for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(i.getFirstName()) && m.getLastName().equals(i.getLastName())) {
                     final LocalDate birthDate = m.getBirthdate().toInstant().atZone(systemDefault()).toLocalDate();
                     final LocalDate now = LocalDate.now();
@@ -97,7 +97,7 @@ public class Flood {
 
     private void setPersonsMedicalHistory(List<InhabitantResponse> inhabitants) {
         for (final InhabitantResponse i : inhabitants) {
-            for (final MedicalRecordsDTO m : App.getMedicalrecords()) {
+            for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(i.getFirstName()) && m.getLastName().equals(i.getLastName())) {
                     final MedicalHistory medicationResponse = new MedicalHistory();
                     medicationResponse.setMedications(m.getMedications());

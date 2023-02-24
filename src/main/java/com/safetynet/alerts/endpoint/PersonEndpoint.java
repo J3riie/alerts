@@ -33,9 +33,9 @@ public class PersonEndpoint {
 
     @PostMapping
     APIResponse<Void> addPerson(@RequestBody @Valid PersonsDTO newPerson) {
-        logger.info("Adding a new person in the data");
+        logger.info("Adding {} {} in the data", newPerson.getFirstName(), newPerson.getLastName());
         personService.addPerson(newPerson);
-        return new APIResponse<>(HttpStatus.CREATED.value(), "Person added successfully");
+        return new APIResponse<>(HttpStatus.CREATED.value(), String.format("%s %s added successfully", newPerson.getFirstName(), newPerson.getLastName()));
     }
 
     @PutMapping
@@ -46,9 +46,9 @@ public class PersonEndpoint {
         logger.info("Modifying {} {}", firstName, lastName);
         final PersonsDTO person = personService.modifyPerson(firstName, lastName, address, city, zip, phone, email);
         if (person == null) {
-            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Unable to modify person : not found");
+            return new APIResponse<>(HttpStatus.NOT_FOUND.value(), String.format("Unable to modify %s %s : person not found", firstName, lastName));
         }
-        return new APIResponse<>(HttpStatus.NO_CONTENT.value(), "Person modified successfully");
+        return new APIResponse<>(HttpStatus.NO_CONTENT.value(), String.format("%s %s modified successfully", firstName, lastName));
     }
 
     @DeleteMapping
@@ -56,8 +56,8 @@ public class PersonEndpoint {
         logger.info("Deleting {} {} from the data", firstName, lastName);
         final Optional<PersonsDTO> optionalPerson = personService.deletePerson(firstName, lastName);
         if (optionalPerson.isPresent()) {
-            return new APIResponse<>(HttpStatus.OK.value(), "Person deleted successfully");
+            return new APIResponse<>(HttpStatus.OK.value(), String.format("%s %s deleted successfully", firstName, lastName));
         }
-        return new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Unable to delete person : not found");
+        return new APIResponse<>(HttpStatus.NOT_FOUND.value(), String.format("Unable to delete %s %s : person not found", firstName, lastName));
     }
 }
