@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.response.APIResponse;
-import com.safetynet.alerts.service.FireStationService;
+import com.safetynet.alerts.service.endpoint.FireStationService;
 
 import jakarta.validation.Valid;
 

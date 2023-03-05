@@ -1,4 +1,4 @@
-package com.safetynet.alerts.service;
+package com.safetynet.alerts.service.endpoint;
 
 import java.util.Optional;
 

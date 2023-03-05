@@ -1,10 +1,13 @@
 package com.safetynet.alerts.dto.node;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -20,6 +23,7 @@ public class MedicalRecordsDTO {
     private String lastName;
 
     @JsonProperty("birthdate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     private Date birthdate;
 
     @JsonProperty("medications")
@@ -48,8 +52,8 @@ public class MedicalRecordsDTO {
         this.lastName = lastName;
     }
 
-    public Date getBirthdate() {
-        return birthdate;
+    public LocalDate getBirthdate() {
+        return birthdate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     public void setBirthdate(Date birthdate) {

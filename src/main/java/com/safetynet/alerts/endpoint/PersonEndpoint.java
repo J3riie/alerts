@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.response.APIResponse;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.service.endpoint.PersonService;
 
 import jakarta.validation.Valid;
 

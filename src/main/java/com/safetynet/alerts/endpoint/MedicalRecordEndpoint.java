@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.response.APIResponse;
-import com.safetynet.alerts.service.MedicalRecordService;
+import com.safetynet.alerts.service.endpoint.MedicalRecordService;
 
 import jakarta.validation.Valid;
 

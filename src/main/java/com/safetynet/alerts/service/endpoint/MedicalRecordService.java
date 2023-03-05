@@ -1,4 +1,4 @@
-package com.safetynet.alerts.service;
+package com.safetynet.alerts.service.endpoint;
 
 import java.util.Date;
 import java.util.List;
@@ -14,7 +14,6 @@ public class MedicalRecordService {
 
     public void addMedicalRecord(MedicalRecordsDTO medicalRecord) {
         App.getMedicalRecords().add(medicalRecord);
-
     }
 
     public MedicalRecordsDTO modifyMedicalRecord(String firstName, String lastName, Date birthdate, List<String> medications, List<String> allergies) {
