@@ -123,8 +123,12 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"a new address\",\r\n    \"station\": 1\r\n}"
+						},
 						"url": {
-							"raw": "localhost:8080/api/firestation?address=11 rue du palais&station=3",
+							"raw": "localhost:8080/api/firestation",
 							"host": [
 								"localhost"
 							],
@@ -132,16 +136,6 @@
 							"path": [
 								"api",
 								"firestation"
-							],
-							"query": [
-								{
-									"key": "address",
-									"value": "11 rue du palais"
-								},
-								{
-									"key": "station",
-									"value": "3"
-								}
 							]
 						}
 					},
@@ -194,7 +188,7 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:8080/api/firestation?address=11 rue du palais",
+							"raw": "localhost:8080/api/firestation?address=1509 Culver St&station=2",
 							"host": [
 								"localhost"
 							],
@@ -206,12 +200,11 @@
 							"query": [
 								{
 									"key": "address",
-									"value": "11 rue du palais"
+									"value": "1509 Culver St"
 								},
 								{
 									"key": "station",
-									"value": "3",
-									"disabled": true
+									"value": "2"
 								}
 							]
 						}
@@ -229,8 +222,12 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Robin\",\r\n    \"lastName\": \"Hugues\",\r\n    \"birthdate\": \"10/24/1998\",\r\n    \"medications\": [\"doliprane\"],\r\n    \"allergies\": [\"pollen\", \"efferalgan\"]\r\n}"
+						},
 						"url": {
-							"raw": "localhost:8080/api/medicalRecord?firstName=Robin&lastName=Hugues&birthdate=10/24/1998&medications=medoc 1, medoc 2&allergies=pollen, efferalgan",
+							"raw": "localhost:8080/api/medicalRecord",
 							"host": [
 								"localhost"
 							],
@@ -238,28 +235,6 @@
 							"path": [
 								"api",
 								"medicalRecord"
-							],
-							"query": [
-								{
-									"key": "firstName",
-									"value": "Robin"
-								},
-								{
-									"key": "lastName",
-									"value": "Hugues"
-								},
-								{
-									"key": "birthdate",
-									"value": "10/24/1998"
-								},
-								{
-									"key": "medications",
-									"value": "medoc 1, medoc 2"
-								},
-								{
-									"key": "allergies",
-									"value": "pollen, efferalgan"
-								}
 							]
 						}
 					},
@@ -497,7 +472,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/api/flood/stations?stations=1,2",
+					"raw": "localhost:8080/api/flood/stations?stations=1,2,3",
 					"host": [
 						"localhost"
 					],
@@ -510,7 +485,7 @@
 					"query": [
 						{
 							"key": "stations",
-							"value": "1,2"
+							"value": "1,2,3"
 						}
 					]
 				}
