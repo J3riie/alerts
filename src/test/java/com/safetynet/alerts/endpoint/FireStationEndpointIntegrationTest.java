@@ -41,19 +41,9 @@ public class FireStationEndpointIntegrationTest {
     }
 
     @Test
-    public void givenFireStationWithInvalidAddress_whenAddFireStation_thenReponseStatusIs400() {
+    public void givenFireStationWithInvalidParameters_whenAddFireStation_thenReponseStatusIs400() {
         // given
-        final FireStationsDTO validFireStation = nodeConstructor.createCustomFireStationsDTO("");
-        // when
-        final APIResponse<Void> response = fireStationEndpoint.addFireStation(validFireStation);
-        // then
-        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    public void givenFireStationWithInvalidStationNumber_whenAddFireStation_thenReponseStatusIs400() {
-        // given
-        final FireStationsDTO validFireStation = nodeConstructor.createCustomFireStationsDTO(0);
+        final FireStationsDTO validFireStation = nodeConstructor.createInvalidFireStationsDTO();
         // when
         final APIResponse<Void> response = fireStationEndpoint.addFireStation(validFireStation);
         // then
