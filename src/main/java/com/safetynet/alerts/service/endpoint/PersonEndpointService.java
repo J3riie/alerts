@@ -8,7 +8,7 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 
 @Service
-public class PersonService {
+public class PersonEndpointService {
 
     public void addPerson(PersonsDTO person) {
         App.getPersons().add(person);

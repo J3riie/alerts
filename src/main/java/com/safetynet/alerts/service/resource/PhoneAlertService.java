@@ -3,10 +3,13 @@ package com.safetynet.alerts.service.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 
+@Service
 public class PhoneAlertService {
 
     public ArrayList<String> getAddressesFromStation(int stationNumber) {

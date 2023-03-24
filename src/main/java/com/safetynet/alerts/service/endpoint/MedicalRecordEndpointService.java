@@ -10,7 +10,7 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 
 @Service
-public class MedicalRecordService {
+public class MedicalRecordEndpointService {
 
     public void addMedicalRecord(MedicalRecordsDTO medicalRecord) {
         App.getMedicalRecords().add(medicalRecord);

@@ -5,12 +5,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.response.MedicalHistory;
 import com.safetynet.alerts.dto.response.PersonResponse;
 
+@Service
 public class PersonInfoService {
 
     public ArrayList<PersonResponse> getInfoFromNames(String firstName, String lastName) {

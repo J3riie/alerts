@@ -2,9 +2,12 @@ package com.safetynet.alerts.service.resource;
 
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Service;
+
 import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 
+@Service
 public class CommunityEmailService {
 
     public ArrayList<String> getEmailAddressesFromCity(String city) {

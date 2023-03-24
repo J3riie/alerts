@@ -2,11 +2,12 @@ package com.safetynet.alerts.resource;
 
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.resource.FireStationDTO;
-import com.safetynet.alerts.dto.response.APIResponse;
 import com.safetynet.alerts.dto.response.CoveredPersonResponse;
 import com.safetynet.alerts.service.resource.FireStationService;
 
@@ -25,13 +25,13 @@ import jakarta.validation.constraints.Min;
 @Validated
 public class FireStation {
 
-    private static final Logger logger = LogManager.getLogger(FireStation.class);
+    private static final Logger logger = LoggerFactory.getLogger(FireStation.class);
 
     @Autowired
     FireStationService fireStationService;
 
     @GetMapping
-    APIResponse<FireStationDTO> index(
+    ResponseEntity<FireStationDTO> index(
             @RequestParam(name = "stationNumber") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
         logger.info("List of the persons covered by the firestation number {} :", stationNumber);
         final ArrayList<String> addresses = fireStationService.getAddressesFromStation(stationNumber);
@@ -51,6 +51,6 @@ public class FireStation {
         }
         logger.info("Number of adults : {}", numberOfAdults);
         logger.info("Number of children : {}", numberOfChildren);
-        return new APIResponse<>(HttpStatus.OK.value(), String.format("List of the persons covered by the firestation number %d", stationNumber), response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

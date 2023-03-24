@@ -8,7 +8,7 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 
 @Service
-public class FireStationService {
+public class FireStationEndpointService {
 
     public void addFireStation(FireStationsDTO firestation) {
         App.getFirestations().add(firestation);
