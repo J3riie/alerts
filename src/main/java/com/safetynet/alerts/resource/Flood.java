@@ -3,8 +3,8 @@ package com.safetynet.alerts.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.safetynet.alerts.dto.resource.StationsDTO;
+import com.safetynet.alerts.dto.resource.FloodDTO;
 import com.safetynet.alerts.dto.response.CoveredHouseResponse;
 import com.safetynet.alerts.dto.response.InhabitantResponse;
 import com.safetynet.alerts.service.resource.FloodService;
@@ -29,7 +29,7 @@ public class Flood {
     FloodService floodService;
 
     @GetMapping(value = "/stations")
-    ResponseEntity<StationsDTO> stations(@RequestParam(name = "stations") List<Integer> stations) {
+    ResponseEntity<FloodDTO> getInfoFromPersonsCoveredByStations(@RequestParam(name = "stations") List<Integer> stations) {
         logger.info("List of the persons covered by one of the stations number {} with their medical history :", stations);
         final ArrayList<String> stationAddresses = floodService.getFirestationAddressesFromNumbers(stations);
 
@@ -43,7 +43,7 @@ public class Flood {
             coveredHouses.add(coveredHouse);
         }
 
-        final StationsDTO response = new StationsDTO();
+        final FloodDTO response = new FloodDTO();
         response.setCoveredHouses(coveredHouses);
 
         for (final CoveredHouseResponse c : coveredHouses) {

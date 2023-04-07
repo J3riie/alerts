@@ -30,7 +30,7 @@ public class PhoneAlert {
     PhoneAlertService phoneAlertService;
 
     @GetMapping
-    ResponseEntity<PhoneAlertDTO> index(
+    ResponseEntity<PhoneAlertDTO> getPhoneNumbersFromPersonsCoveredByStation(
             @RequestParam(name = "firestation") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
         logger.info("List of phone numbers of the persons covered by the firestation number {} :", stationNumber);
         final ArrayList<String> addresses = phoneAlertService.getAddressesFromStation(stationNumber);

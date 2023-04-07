@@ -89,7 +89,7 @@ public class FireStationEndpointIntegrationTest {
     }
 
     @Test
-    public void givenInvalidParameters_whenModifyFireStation_thenResponseStatusIsNotFound() {
+    public void givenUnknownAddressParameter_whenModifyFireStation_thenResponseStatusIsNotFound() {
         // given
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
@@ -133,7 +133,7 @@ public class FireStationEndpointIntegrationTest {
     }
 
     @Test
-    public void givenInvalidParameters_whenDeleteFireStation_thenResponseStatusIsNotFound() {
+    public void givenUnknownAddressParameter_whenDeleteFireStation_thenResponseStatusIsNotFound() {
         // given
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when

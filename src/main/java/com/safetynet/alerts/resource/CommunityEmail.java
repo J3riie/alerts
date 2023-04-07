@@ -26,7 +26,7 @@ public class CommunityEmail {
     CommunityEmailService communityEmailService;
 
     @GetMapping
-    ResponseEntity<CommunityEmailDTO> index(@RequestParam(name = "city") String city) {
+    ResponseEntity<CommunityEmailDTO> getEmailsFromCity(@RequestParam(name = "city") String city) {
         logger.info("List of the email addresses of the persons living in {} :", city);
         final ArrayList<String> emailAddresses = communityEmailService.getEmailAddressesFromCity(city);
 

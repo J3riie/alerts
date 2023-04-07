@@ -27,7 +27,7 @@ public class Fire {
     FireService fireService;
 
     @GetMapping
-    ResponseEntity<FireDTO> index(@RequestParam(name = "address") String address) {
+    ResponseEntity<FireDTO> getPersonsInfoAtAddress(@RequestParam(name = "address") String address) {
         logger.info("List of the persons living at {}, their medical history and the station covering them :", address);
 
         final int stationNumber = fireService.getFirestationNumberFromAddress(address);

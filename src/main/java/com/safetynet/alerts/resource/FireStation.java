@@ -31,7 +31,7 @@ public class FireStation {
     FireStationService fireStationService;
 
     @GetMapping
-    ResponseEntity<FireStationDTO> index(
+    ResponseEntity<FireStationDTO> getPersonsCoveredByStation(
             @RequestParam(name = "stationNumber") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
         logger.info("List of the persons covered by the firestation number {} :", stationNumber);
         final ArrayList<String> addresses = fireStationService.getAddressesFromStation(stationNumber);

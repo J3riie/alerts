@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safetynet.alerts.dto.response.CoveredHouseResponse;
 
-public class StationsDTO {
+public class FloodDTO {
 
     @JsonProperty("covered_houses")
     private List<CoveredHouseResponse> coveredHouses;

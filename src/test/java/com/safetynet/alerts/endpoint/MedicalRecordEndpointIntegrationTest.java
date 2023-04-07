@@ -97,10 +97,10 @@ public class MedicalRecordEndpointIntegrationTest {
         // given
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecord?firstName=John&lastName=Boyd",
-                HttpMethod.PUT, request, Void.class);
+        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecord?firstName=Jacob&lastName=Boyd",
+                HttpMethod.DELETE, request, Void.class);
         // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MedicalRecordEndpointIntegrationTest {
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
         final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecordfirstName=Robin&lastName=Hugues",
-                HttpMethod.PUT, request, Void.class);
+                HttpMethod.DELETE, request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }

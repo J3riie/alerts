@@ -2,8 +2,8 @@ package com.safetynet.alerts.resource;
 
 import java.util.ArrayList;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,7 +27,7 @@ public class PersonInfo {
     PersonInfoService personInfoService;
 
     @GetMapping
-    ResponseEntity<PersonInfoDTO> index(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+    ResponseEntity<PersonInfoDTO> getPersonsWithNames(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
         logger.info("List of the persons info whose names are {} {} :", firstName, lastName);
         final ArrayList<PersonResponse> personsInfo = personInfoService.getInfoFromNames(firstName, lastName);
         personInfoService.setPersonsMedicalHistory(personsInfo);

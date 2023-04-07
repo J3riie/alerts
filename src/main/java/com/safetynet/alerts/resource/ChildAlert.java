@@ -28,7 +28,7 @@ public class ChildAlert {
     ChildAlertService childAlertService;
 
     @GetMapping
-    ResponseEntity<ChildAlertDTO> index(@RequestParam(name = "address") String address) {
+    ResponseEntity<ChildAlertDTO> getChildrenListAtAddress(@RequestParam(name = "address") String address) {
         logger.info("List of the children living at {} and their family :", address);
         final ArrayList<FamilyResponse> family = childAlertService.getFamilyMembersFromAddress(address);
         final ArrayList<ChildResponse> children = childAlertService.getChildrenFromFamily(family);
