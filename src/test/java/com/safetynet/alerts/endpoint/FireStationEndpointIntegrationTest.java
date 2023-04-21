@@ -1,145 +1,102 @@
 package com.safetynet.alerts.endpoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
+import com.safetynet.alerts.dto.node.FireStationsDTO;
+import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestInstance(Lifecycle.PER_CLASS)
+@WebMvcTest(FireStationEndpoint.class)
 public class FireStationEndpointIntegrationTest {
 
-    @Value(value = "${local.server.port}")
-    private int port;
+    @MockBean
+    FireStationService service;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
-    @Autowired
-    FireStationEndpoint fireStationEndpoint;
-
-    private NodeConstructorTestUtil nodeConstructor;
-
-    private HttpHeaders httpHeaders;
-
-    @BeforeAll
-    public void setup() {
-        nodeConstructor = new NodeConstructorTestUtil();
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-    }
+    private static NodeConstructorTestUtil nodeConstructor = new NodeConstructorTestUtil();
 
     @Test
     public void givenValidFireStationAsJson_whenAddFireStation_thenResponseStatusIsCreated() throws Exception {
         // given
-        final String payload = nodeConstructor.createValidFireStationAsJson();
-        final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/firestation", request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        doNothing().when(service).addFireStation(any());
+        // when then
+        this.mockMvc.perform(post("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).content(nodeConstructor.createValidFireStationAsJson()))
+                .andExpect(status().isCreated());
     }
 
     @Test
     public void givenInvalidFireStationAsJson_whenAddFireStation_thenReponseStatusIsBadRequest() throws Exception {
         // given
-        final String payload = nodeConstructor.createInvalidFireStationAsJson();
-        final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/firestation", request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        doNothing().when(service).addFireStation(any());
+        // when then
+        this.mockMvc.perform(post("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).content(nodeConstructor.createInvalidFireStationAsJson()))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenValidParameters_whenModifyFireStation_thenResponseStatusIsNoContent() {
+    public void givenValidParameters_whenModifyFireStation_thenResponseStatusIsNoContent() throws Exception {
         // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?address=1509 Culver St&station=1",
-                HttpMethod.PUT, request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        when(service.modifyFireStation(anyString(), anyInt())).thenReturn(new FireStationsDTO());
+        // when then
+        this.mockMvc.perform(put("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).param("address", "1509 Culver St").param("station", "1"))
+        .andExpect(status().isNoContent());
     }
 
     @Test
-    public void givenMissingParameter_whenModifyFireStation_thenResponseStatusIsBadRequest() {
+    public void givenMissingParameter_whenModifyFireStation_thenResponseStatusIsBadRequest() throws Exception {
         // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?address=an address", HttpMethod.PUT,
-                request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        when(service.modifyFireStation(anyString(), anyInt())).thenReturn(new FireStationsDTO());
+        // when then
+        this.mockMvc.perform(put("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).param("address", "1509 Culver St")).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenUnknownAddressParameter_whenModifyFireStation_thenResponseStatusIsNotFound() {
+    public void givenValidAddress_whenDeleteFireStation_thenResponseStatusIsOk() throws Exception {
         // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?address=an address&station=1",
-                HttpMethod.PUT, request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        when(service.deleteFireStation(anyString())).thenReturn(Optional.of(new FireStationsDTO()));
+        // when then
+        this.mockMvc.perform(delete("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).param("address", "1509 Culver St")).andExpect(status().isOk());
     }
 
     @Test
-    public void givenValidAddress_whenDeleteFireStation_thenResponseStatusIsOk() {
+    public void givenValidStationNumber_whenDeleteFireStation_thenResponseStatusIsOk() throws Exception {
         // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?address=1509 Culver St",
-                HttpMethod.DELETE, request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        when(service.deleteFireStation(anyInt())).thenReturn(true);
+        // when then
+        this.mockMvc.perform(delete("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).param("station", "1")).andExpect(status().isOk());
     }
 
     @Test
-    public void givenValidStationNumber_whenDeleteFireStation_thenResponseStatusIsOk() {
-        // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?station=1", HttpMethod.DELETE, request,
-                Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    public void givenInvalidParameters_whenDeleteFireStation_thenResponseStatusIsBadRequest() throws Exception {
+        // given when then
+        this.mockMvc.perform(delete("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).param("address", "1509 Culver St").param("station", "1"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenInvalidParameters_whenDeleteFireStation_thenResponseStatusIsBadRequest() {
+    public void givenUnknownAddressParameter_whenDeleteFireStation_thenResponseStatusIsNotFound() throws Exception {
         // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?address=1509 Culver St&station=1",
-                HttpMethod.DELETE, request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void givenUnknownAddressParameter_whenDeleteFireStation_thenResponseStatusIsNotFound() {
-        // given
-        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
-        // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/firestation?address=an address", HttpMethod.DELETE,
-                request, Void.class);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        when(service.deleteFireStation(anyString())).thenReturn(Optional.empty());
+        // when then
+        this.mockMvc.perform(delete("/firestation").contentType(MediaType.APPLICATION_JSON_VALUE).param("address", "unknown")).andExpect(status().isNotFound());
     }
 }

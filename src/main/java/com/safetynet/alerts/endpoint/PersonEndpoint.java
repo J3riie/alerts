@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.node.PersonsDTO;
-import com.safetynet.alerts.service.endpoint.PersonEndpointService;
+import com.safetynet.alerts.service.PersonService;
 
 import jakarta.validation.Valid;
 
@@ -29,7 +29,7 @@ public class PersonEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(PersonEndpoint.class);
 
     @Autowired
-    private PersonEndpointService personService;
+    private PersonService personService;
 
     @PostMapping
     ResponseEntity<Void> addPerson(@RequestBody @Valid PersonsDTO newPerson) {
@@ -44,11 +44,12 @@ public class PersonEndpoint {
             @RequestParam(required = false, name = "zip") Integer zip, @RequestParam(required = false, name = "phone") String phone,
             @RequestParam(required = false, name = "email") String email) {
         logger.info("Modifying {} {}", firstName, lastName);
-        final PersonsDTO person = personService.modifyPerson(firstName, lastName, address, city, zip, phone, email);
-        if (person == null) {
+        try {
+            personService.modifyPerson(firstName, lastName, address, city, zip, phone, email);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (final Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping

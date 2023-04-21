@@ -58,7 +58,7 @@ public class DataJson {
         if (other == this) {
             return true;
         }
-        if ((other instanceof DataJson) == false) {
+        if (!(other instanceof DataJson)) {
             return false;
         }
         final DataJson rhs = ((DataJson) other);

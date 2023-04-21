@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
-import com.safetynet.alerts.service.endpoint.MedicalRecordEndpointService;
+import com.safetynet.alerts.service.MedicalRecordService;
 
 import jakarta.validation.Valid;
 
@@ -29,7 +29,7 @@ public class MedicalRecordEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(MedicalRecordEndpoint.class);
 
     @Autowired
-    private MedicalRecordEndpointService medicalRecordService;
+    private MedicalRecordService medicalRecordService;
 
     @PostMapping
     ResponseEntity<Void> addMedicalRecord(@RequestBody @Valid MedicalRecordsDTO newMedicalRecord) {
@@ -43,11 +43,12 @@ public class MedicalRecordEndpoint {
             @RequestParam(required = false, name = "birthdate") Date birthdate, @RequestParam(required = false, name = "medications") List<String> medications,
             @RequestParam(required = false, name = "allergies") List<String> allergies) {
         logger.info("Modifying {} {}'s medical record", firstName, lastName);
-        final MedicalRecordsDTO medicalRecord = medicalRecordService.modifyMedicalRecord(firstName, lastName, birthdate, medications, allergies);
-        if (medicalRecord == null) {
+        try {
+            medicalRecordService.modifyMedicalRecord(firstName, lastName, birthdate, medications, allergies);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (final Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping

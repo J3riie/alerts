@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,17 +19,39 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.alerts.dto.node.FireStationsDTO;
-import com.safetynet.alerts.service.endpoint.FireStationEndpointService;
+import com.safetynet.alerts.dto.resource.FireStationDTO;
+import com.safetynet.alerts.dto.response.CoveredPersonResponse;
+import com.safetynet.alerts.service.FireStationService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping(value = "/firestation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class FireStationEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(FireStationEndpoint.class);
 
     @Autowired
-    private FireStationEndpointService fireStationService;
+    private FireStationService fireStationService;
+
+    @GetMapping
+    ResponseEntity<FireStationDTO> getPersonsCoveredByStation(
+            @RequestParam(name = "stationNumber") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
+        logger.info("List of the persons covered by the firestation number {} :", stationNumber);
+        try {
+            final FireStationDTO response = fireStationService.getPersonsCoveredByStation(stationNumber);
+
+            for (final CoveredPersonResponse p : response.getCoveredPersons()) {
+                logger.info("{} {} {} {}", p.getFirstName(), p.getLastName(), p.getAddress(), p.getPhone());
+            }
+            logger.info("Number of adults : {}", response.getNumberOfAdults());
+            logger.info("Number of children : {}", response.getNumberOfChildren());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (final Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
     @PostMapping
     ResponseEntity<Void> addFireStation(@RequestBody @Valid FireStationsDTO newStation) {
@@ -39,11 +63,12 @@ public class FireStationEndpoint {
     @PutMapping
     ResponseEntity<Void> modifyFireStation(@RequestParam(name = "address") String address, @RequestParam(name = "station") Integer station) {
         logger.info("Modifying the station for address {}", address);
-        final FireStationsDTO firestation = fireStationService.modifyFireStation(address, station);
-        if (firestation == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            fireStationService.modifyFireStation(address, station);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (final Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping
