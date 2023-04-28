@@ -1,7 +1,5 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +28,9 @@ public class ChildAlertEndpoint {
     @GetMapping
     ResponseEntity<ChildAlertDTO> getChildrenListAtAddress(@RequestParam(name = "address") String address) {
         logger.info("List of the children living at {} and their family :", address);
-        final List<FamilyResponse> family = childAlertService.getFamilyMembersFromAddress(address);
-        final List<ChildResponse> children = childAlertService.getChildrenFromFamily(family);
+        final ChildAlertDTO response = childAlertService.getChildrenAtAddress(address);
 
-        final ChildAlertDTO response = new ChildAlertDTO();
-        response.setChildren(children);
-
-        for (final ChildResponse c : children) {
+        for (final ChildResponse c : response.getChildren()) {
             logger.info("{} {} {}", c.getFirstName(), c.getLastName(), c.getAge());
             logger.info("Family :");
             for (final FamilyResponse f : c.getFamily()) {

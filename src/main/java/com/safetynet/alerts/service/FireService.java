@@ -11,6 +11,7 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
+import com.safetynet.alerts.dto.resource.FireDTO;
 import com.safetynet.alerts.dto.response.InhabitantResponse;
 import com.safetynet.alerts.dto.response.MedicalHistory;
 import com.safetynet.alerts.repo.DataRepository;
@@ -24,7 +25,18 @@ public class FireService {
         this.repo = repo;
     }
 
-    public List<InhabitantResponse> getInfoFromAddress(String address) {
+    public FireDTO getPersonsInfoAtAddress(String address) {
+        final int stationNumber = getFirestationNumberFromAddress(address);
+        final List<InhabitantResponse> inhabitants = getInfoFromAddress(address);
+        setPersonsMedicalHistory(inhabitants);
+
+        final FireDTO response = new FireDTO();
+        response.setInhabitants(inhabitants);
+        response.setCoveringStation(stationNumber);
+        return response;
+    }
+
+    private List<InhabitantResponse> getInfoFromAddress(String address) {
         final ArrayList<InhabitantResponse> inhabitants = new ArrayList<>();
         for (final PersonsDTO p : repo.getAllPersons()) {
             if (p.getAddress().equals(address)) {
@@ -49,7 +61,7 @@ public class FireService {
         return inhabitants;
     }
 
-    public void setPersonsMedicalHistory(List<InhabitantResponse> inhabitants) {
+    private void setPersonsMedicalHistory(List<InhabitantResponse> inhabitants) {
         for (final InhabitantResponse i : inhabitants) {
             for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(i.getFirstName()) && m.getLastName().equals(i.getLastName())) {
@@ -62,7 +74,7 @@ public class FireService {
         }
     }
 
-    public int getFirestationNumberFromAddress(String address) {
+    private int getFirestationNumberFromAddress(String address) {
         for (final FireStationsDTO f : App.getFirestations()) {
             if (f.getAddress().equals(address)) {
                 return f.getStation();

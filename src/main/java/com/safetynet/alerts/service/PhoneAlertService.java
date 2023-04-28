@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
+import com.safetynet.alerts.dto.resource.PhoneAlertDTO;
 import com.safetynet.alerts.repo.DataRepository;
 
 @Service
@@ -18,7 +19,17 @@ public class PhoneAlertService {
         this.repo = repo;
     }
 
-    public List<String> getAddressesFromStation(int stationNumber) {
+    public PhoneAlertDTO getPhoneNumbersFromPersonsCoveredByStation(int stationNumber) {
+        final List<String> addresses = getAddressesFromStation(stationNumber);
+        final List<String> phones = getPhonesFromAddresses(addresses);
+
+        final PhoneAlertDTO response = new PhoneAlertDTO();
+        response.setPhones(phones);
+
+        return response;
+    }
+
+    private List<String> getAddressesFromStation(int stationNumber) {
         final ArrayList<String> addresses = new ArrayList<>();
         for (final FireStationsDTO f : repo.getAllFirestations()) {
             if (f.getStation() == stationNumber) {
@@ -28,7 +39,7 @@ public class PhoneAlertService {
         return addresses;
     }
 
-    public List<String> getPhonesFromAddresses(List<String> addresses) {
+    private List<String> getPhonesFromAddresses(List<String> addresses) {
         final ArrayList<String> phones = new ArrayList<>();
         for (final String address : addresses) {
             for (final PersonsDTO p : repo.getAllPersons()) {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
+import com.safetynet.alerts.dto.resource.PersonInfoDTO;
 import com.safetynet.alerts.dto.response.MedicalHistory;
 import com.safetynet.alerts.dto.response.PersonResponse;
 import com.safetynet.alerts.repo.DataRepository;
@@ -22,7 +23,16 @@ public class PersonInfoService {
         this.repo = repo;
     }
 
-    public List<PersonResponse> getInfoFromNames(String firstName, String lastName) {
+    public PersonInfoDTO getPersonsWithNames(String firstName, String lastName) {
+        final List<PersonResponse> personsInfo = getInfoFromNames(firstName, lastName);
+        setPersonsMedicalHistory(personsInfo);
+
+        final PersonInfoDTO response = new PersonInfoDTO();
+        response.setPersons(personsInfo);
+        return response;
+    }
+
+    private List<PersonResponse> getInfoFromNames(String firstName, String lastName) {
         final ArrayList<PersonResponse> persons = new ArrayList<>();
         for (final PersonsDTO p : repo.getAllPersons()) {
             if (p.getFirstName().equals(firstName) && p.getLastName().equals(lastName)) {
@@ -46,7 +56,7 @@ public class PersonInfoService {
         return persons;
     }
 
-    public void setPersonsMedicalHistory(List<PersonResponse> persons) {
+    private void setPersonsMedicalHistory(List<PersonResponse> persons) {
         for (final PersonResponse p : persons) {
             for (final MedicalRecordsDTO m : repo.getAllMedicalRecords()) {
                 if (m.getFirstName().equals(p.getFirstName()) && m.getLastName().equals(p.getLastName())) {

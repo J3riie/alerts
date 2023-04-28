@@ -1,6 +1,5 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,22 +30,9 @@ public class FloodEndpoint {
     @GetMapping(value = "/stations")
     ResponseEntity<FloodDTO> getInfoFromPersonsCoveredByStations(@RequestParam(name = "stations") List<Integer> stations) {
         logger.info("List of the persons covered by one of the stations number {} with their medical history :", stations);
-        final List<String> stationAddresses = floodService.getFirestationAddressesFromNumbers(stations);
+        final FloodDTO response = floodService.getInfoFromPersonsCoveredByStations(stations);
 
-        final ArrayList<CoveredHouseResponse> coveredHouses = new ArrayList<>();
-        for (final String s : stationAddresses) {
-            final List<InhabitantResponse> inhabitants = floodService.getInfoFromAddress(s);
-            floodService.setPersonsMedicalHistory(inhabitants);
-            final CoveredHouseResponse coveredHouse = new CoveredHouseResponse();
-            coveredHouse.setAddress(s);
-            coveredHouse.setInhabitants(inhabitants);
-            coveredHouses.add(coveredHouse);
-        }
-
-        final FloodDTO response = new FloodDTO();
-        response.setCoveredHouses(coveredHouses);
-
-        for (final CoveredHouseResponse c : coveredHouses) {
+        for (final CoveredHouseResponse c : response.getCoveredHouses()) {
             logger.info("{}", c.getAddress());
             for (final InhabitantResponse i : c.getInhabitants()) {
                 logger.info("{} {} {} {} {}", i.getFirstName(), i.getLastName(), i.getPhone(), i.getAge(), i.getMedicalHistory());

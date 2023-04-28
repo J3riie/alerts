@@ -1,7 +1,5 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +28,15 @@ public class FireEndpoint {
     ResponseEntity<FireDTO> getPersonsInfoAtAddress(@RequestParam(name = "address") String address) {
         logger.info("List of the persons living at {}, their medical history and the station covering them :", address);
 
-        final int stationNumber = fireService.getFirestationNumberFromAddress(address);
-        final List<InhabitantResponse> inhabitants = fireService.getInfoFromAddress(address);
-        fireService.setPersonsMedicalHistory(inhabitants);
+        final FireDTO response = fireService.getPersonsInfoAtAddress(address);
 
-        final FireDTO response = new FireDTO();
-        response.setInhabitants(inhabitants);
-        response.setCoveringStation(stationNumber);
-
-        for (final InhabitantResponse i : inhabitants) {
+        for (final InhabitantResponse i : response.getInhabitants()) {
             logger.info("{} {} {} {} {}", i.getFirstName(), i.getLastName(), i.getPhone(), i.getAge(), i.getMedicalHistory());
         }
-        if (stationNumber == -1) {
+        if (response.getCoveringStation() == -1) {
             logger.error("The referenced address isn't covered by any station");
         } else {
-            logger.info("Firestation serving {} is the station number {}.", address, stationNumber);
+            logger.info("Firestation serving {} is the station number {}.", address, response.getCoveringStation());
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

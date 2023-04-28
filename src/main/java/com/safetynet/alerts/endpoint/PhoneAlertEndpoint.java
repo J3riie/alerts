@@ -1,7 +1,5 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +31,10 @@ public class PhoneAlertEndpoint {
     ResponseEntity<PhoneAlertDTO> getPhoneNumbersFromPersonsCoveredByStation(
             @RequestParam(name = "firestation") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
         logger.info("List of phone numbers of the persons covered by the firestation number {} :", stationNumber);
-        final List<String> addresses = phoneAlertService.getAddressesFromStation(stationNumber);
-        final List<String> phones = phoneAlertService.getPhonesFromAddresses(addresses);
 
-        final PhoneAlertDTO response = new PhoneAlertDTO();
-        response.setPhones(phones);
+        final PhoneAlertDTO response = phoneAlertService.getPhoneNumbersFromPersonsCoveredByStation(stationNumber);
 
-        for (final String p : phones) {
+        for (final String p : response.getPhones()) {
             logger.info("{}", p);
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);

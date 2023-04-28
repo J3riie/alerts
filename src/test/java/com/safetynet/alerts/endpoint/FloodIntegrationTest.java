@@ -1,65 +1,47 @@
 package com.safetynet.alerts.endpoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
-import com.safetynet.alerts.dto.resource.FloodDTO;
-import com.safetynet.alerts.endpoint.FloodEndpoint;
 import com.safetynet.alerts.service.FloodService;
+import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestInstance(Lifecycle.PER_CLASS)
+@WebMvcTest(FloodEndpoint.class)
 public class FloodIntegrationTest {
 
-    @Autowired
+    @MockBean
     FloodService service;
 
     @Autowired
-    FloodEndpoint flood;
+    private MockMvc mockMvc;
 
-    private HttpHeaders httpHeaders;
+    private static NodeConstructorTestUtil nodeConstructor = new NodeConstructorTestUtil();
 
-    @BeforeAll
-    public void setup() {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    @Test
+    public void givenKnownStationNumbers_whenGetInfoFromPersonsCoveredByStations_thenListIsReturned() throws Exception {
+        // given
+        when(service.getInfoFromPersonsCoveredByStations(anyList())).thenReturn(nodeConstructor.createInitialisedFloodDTO());
+        // when then
+        this.mockMvc.perform(get("/flood/stations?stations=1,2,3").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.covered_houses").isNotEmpty());
     }
 
     @Test
-    public void givenKnownStationNumbers_whenGetInfoFromPersonsCoveredByStations_thenListIsReturned() {
+    public void givenUnknownStationNumbers_whenGetInfoFromPersonsCoveredByStations_thenEmptyListIsReturned() throws Exception {
         // given
-        final List<Integer> stations = Arrays.asList(1, 2);
-        // when
-        final ResponseEntity<FloodDTO> response = flood.getInfoFromPersonsCoveredByStations(stations);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getCoveredHouses()).anyMatch(c -> c.getAddress().matches("644 Gershwin Cir"));
-        assertThat(response.getBody().getCoveredHouses()).hasSize(6);
-    }
-
-    @Test
-    public void givenUnknownStationNumbers_whenGetInfoFromPersonsCoveredByStations_thenEmptyListIsReturned() {
-        // given
-        final List<Integer> stations = Arrays.asList(6, 10);
-        // when
-        final ResponseEntity<FloodDTO> response = flood.getInfoFromPersonsCoveredByStations(stations);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertTrue(response.getBody().getCoveredHouses().isEmpty());
+        when(service.getInfoFromPersonsCoveredByStations(anyList())).thenReturn(nodeConstructor.createEmptyFloodDTO());
+        // when then
+        this.mockMvc.perform(get("/flood/stations?stations=0").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.covered_houses").isEmpty());
     }
 }

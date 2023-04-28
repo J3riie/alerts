@@ -1,64 +1,48 @@
 package com.safetynet.alerts.endpoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
-import com.safetynet.alerts.dto.resource.FireDTO;
-import com.safetynet.alerts.endpoint.FireEndpoint;
 import com.safetynet.alerts.service.FireService;
+import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestInstance(Lifecycle.PER_CLASS)
+@WebMvcTest(FireEndpoint.class)
 public class FireIntegrationTest {
 
-    @Autowired
+    @MockBean
     FireService service;
 
     @Autowired
-    FireEndpoint fire;
+    private MockMvc mockMvc;
 
-    private HttpHeaders httpHeaders;
+    private static NodeConstructorTestUtil nodeConstructor = new NodeConstructorTestUtil();
 
-    @BeforeAll
-    public void setup() {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    @Test
+    public void givenKnownAddress_whenGetPersonsInfoAtAddress_thenListIsReturned() throws Exception {
+        // given
+        when(service.getPersonsInfoAtAddress(anyString())).thenReturn(nodeConstructor.createInitialisedFireDTO());
+        // when then
+        this.mockMvc.perform(get("/fire?address=anything").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.inhabitants").isNotEmpty());
     }
 
     @Test
-    public void givenKnownAddress_whenGetPersonsInfoAtAddress_thenListIsReturned() {
+    public void givenUnknownAddress_whenGetPersonsInfoAtAddress_thenEmptyListIsReturned() throws Exception {
         // given
-        final String address = "834 Binoc Ave";
-        // when
-        final ResponseEntity<FireDTO> response = fire.getPersonsInfoAtAddress(address);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getInhabitants()).anyMatch(c -> c.getFirstName().matches("Tessa"));
-        assertThat(response.getBody().getInhabitants()).anyMatch(c -> c.getMedicalHistory().getAllergies().isEmpty());
-        assertThat(response.getBody().getStationCovering()).isEqualTo(3);
-    }
-
-    @Test
-    public void givenUnknownAddress_whenGetPersonsInfoAtAddress_thenEmptyListIsReturned() {
-        // given
-        final String address = "an unknown address";
-        // when
-        final ResponseEntity<FireDTO> response = fire.getPersonsInfoAtAddress(address);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertTrue(response.getBody().getInhabitants().isEmpty());
+        when(service.getPersonsInfoAtAddress(anyString())).thenReturn(nodeConstructor.createEmptyFireDTO());
+        // when then
+        this.mockMvc.perform(get("/fire?address=anything").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.inhabitants").isEmpty());
     }
 
 }

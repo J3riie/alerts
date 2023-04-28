@@ -1,7 +1,5 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +27,10 @@ public class PersonInfoEndpoint {
     @GetMapping
     ResponseEntity<PersonInfoDTO> getPersonsWithNames(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
         logger.info("List of the persons info whose names are {} {} :", firstName, lastName);
-        final List<PersonResponse> personsInfo = personInfoService.getInfoFromNames(firstName, lastName);
-        personInfoService.setPersonsMedicalHistory(personsInfo);
 
-        final PersonInfoDTO response = new PersonInfoDTO();
-        response.setPersons(personsInfo);
+        final PersonInfoDTO response = personInfoService.getPersonsWithNames(firstName, lastName);
 
-        for (final PersonResponse p : personsInfo) {
+        for (final PersonResponse p : response.getPersons()) {
             logger.info("{} {} {} {} {} {}", p.getFirstName(), p.getLastName(), p.getAddress(), p.getAge(), p.getEmailAddress(), p.getMedicalHistory());
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);

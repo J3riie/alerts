@@ -11,6 +11,8 @@ import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
+import com.safetynet.alerts.dto.resource.FloodDTO;
+import com.safetynet.alerts.dto.response.CoveredHouseResponse;
 import com.safetynet.alerts.dto.response.InhabitantResponse;
 import com.safetynet.alerts.dto.response.MedicalHistory;
 import com.safetynet.alerts.repo.DataRepository;
@@ -24,7 +26,25 @@ public class FloodService {
         this.repo = repo;
     }
 
-    public List<String> getFirestationAddressesFromNumbers(List<Integer> stations) {
+    public FloodDTO getInfoFromPersonsCoveredByStations(List<Integer> stations) {
+        final List<String> stationAddresses = getFirestationAddressesFromNumbers(stations);
+
+        final ArrayList<CoveredHouseResponse> coveredHouses = new ArrayList<>();
+        for (final String s : stationAddresses) {
+            final List<InhabitantResponse> inhabitants = getInfoFromAddress(s);
+            setPersonsMedicalHistory(inhabitants);
+            final CoveredHouseResponse coveredHouse = new CoveredHouseResponse();
+            coveredHouse.setAddress(s);
+            coveredHouse.setInhabitants(inhabitants);
+            coveredHouses.add(coveredHouse);
+        }
+
+        final FloodDTO response = new FloodDTO();
+        response.setCoveredHouses(coveredHouses);
+        return response;
+    }
+
+    private List<String> getFirestationAddressesFromNumbers(List<Integer> stations) {
         final ArrayList<String> stationAddresses = new ArrayList<>();
         for (final int s : stations) {
             for (final FireStationsDTO f : repo.getAllFirestations()) {
@@ -36,7 +56,7 @@ public class FloodService {
         return stationAddresses;
     }
 
-    public List<InhabitantResponse> getInfoFromAddress(String address) {
+    private List<InhabitantResponse> getInfoFromAddress(String address) {
         final ArrayList<InhabitantResponse> inhabitants = new ArrayList<>();
         for (final PersonsDTO p : repo.getAllPersons()) {
             if (p.getAddress().equals(address)) {
@@ -61,7 +81,7 @@ public class FloodService {
         return inhabitants;
     }
 
-    public void setPersonsMedicalHistory(List<InhabitantResponse> inhabitants) {
+    private void setPersonsMedicalHistory(List<InhabitantResponse> inhabitants) {
         for (final InhabitantResponse i : inhabitants) {
             for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
                 if (m.getFirstName().equals(i.getFirstName()) && m.getLastName().equals(i.getLastName())) {

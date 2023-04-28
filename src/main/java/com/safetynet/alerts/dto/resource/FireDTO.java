@@ -21,7 +21,7 @@ public class FireDTO {
         this.inhabitants = inhabitants;
     }
 
-    public int getStationCovering() {
+    public int getCoveringStation() {
         return stationCovering;
     }
 

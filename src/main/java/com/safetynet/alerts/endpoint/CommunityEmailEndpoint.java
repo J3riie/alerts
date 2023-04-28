@@ -1,7 +1,5 @@
 package com.safetynet.alerts.endpoint;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,9 @@ public class CommunityEmailEndpoint {
     @GetMapping
     ResponseEntity<CommunityEmailDTO> getEmailsFromCity(@RequestParam(name = "city") String city) {
         logger.info("List of the email addresses of the persons living in {} :", city);
-        final List<String> emailAddresses = communityEmailService.getEmailAddressesFromCity(city);
+        final CommunityEmailDTO response = communityEmailService.getEmailAddressesFromCity(city);
 
-        final CommunityEmailDTO response = new CommunityEmailDTO();
-        response.setEmailAddresses(emailAddresses);
-
-        for (final String s : emailAddresses) {
+        for (final String s : response.getEmailAddresses()) {
             logger.info("{}", s);
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);

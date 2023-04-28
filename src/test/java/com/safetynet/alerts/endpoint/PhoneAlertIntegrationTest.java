@@ -1,60 +1,47 @@
 package com.safetynet.alerts.endpoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
-import com.safetynet.alerts.dto.resource.PhoneAlertDTO;
-import com.safetynet.alerts.endpoint.PhoneAlertEndpoint;
 import com.safetynet.alerts.service.PhoneAlertService;
+import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestInstance(Lifecycle.PER_CLASS)
+@WebMvcTest(PhoneAlertEndpoint.class)
 public class PhoneAlertIntegrationTest {
 
-    @Autowired
+    @MockBean
     PhoneAlertService service;
 
     @Autowired
-    PhoneAlertEndpoint phoneAlert;
+    private MockMvc mockMvc;
 
-    private HttpHeaders httpHeaders;
+    private static NodeConstructorTestUtil nodeConstructor = new NodeConstructorTestUtil();
 
-    @BeforeAll
-    public void setup() {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    @Test
+    public void givenKnownStationNumber_whenGetPhoneNumbersFromPersonsCoveredByStation_thenListIsReturned() throws Exception {
+        // given
+        when(service.getPhoneNumbersFromPersonsCoveredByStation(anyInt())).thenReturn(nodeConstructor.createInitialisedPhoneAlertDTO());
+        // when then
+        this.mockMvc.perform(get("/phoneAlert?firestation=1").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.phones").isNotEmpty());
     }
 
     @Test
-    public void givenKnownStationNumber_whenGetPhoneNumbersFromPersonsCoveredByStation_thenListIsReturned() {
+    public void givenUnknownStationNumber_whenGetPhoneNumbersFromPersonsCoveredByStation_thenEmptyListIsReturned() throws Exception {
         // given
-        final int stationNumber = 1;
-        // when
-        final ResponseEntity<PhoneAlertDTO> response = phoneAlert.getPhoneNumbersFromPersonsCoveredByStation(stationNumber);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getPhones()).anyMatch(c -> c.matches("841-874-6512"));
-    }
-
-    @Test
-    public void givenUnknownStationNumber_whenGetPhoneNumbersFromPersonsCoveredByStation_thenEmptyListIsReturned() {
-        // given
-        final int stationNumber = 10;
-        // when
-        final ResponseEntity<PhoneAlertDTO> response = phoneAlert.getPhoneNumbersFromPersonsCoveredByStation(stationNumber);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getPhones()).isEmpty();
+        when(service.getPhoneNumbersFromPersonsCoveredByStation(anyInt())).thenReturn(nodeConstructor.createEmptyPhoneAlertDTO());
+        // when then
+        this.mockMvc.perform(get("/phoneAlert?firestation=10").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.phones").isEmpty());
     }
 }

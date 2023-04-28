@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CommunityEmailDTO {
 
-    @JsonProperty("email")
+    @JsonProperty("emails")
     private List<String> emailAddresses;
 
     public List<String> getEmailAddresses() {

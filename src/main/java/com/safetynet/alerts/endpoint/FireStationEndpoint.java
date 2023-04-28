@@ -39,18 +39,14 @@ public class FireStationEndpoint {
     ResponseEntity<FireStationDTO> getPersonsCoveredByStation(
             @RequestParam(name = "stationNumber") @Min(value = 1, message = "The value needs to be strictly positive") int stationNumber) {
         logger.info("List of the persons covered by the firestation number {} :", stationNumber);
-        try {
-            final FireStationDTO response = fireStationService.getPersonsCoveredByStation(stationNumber);
+        final FireStationDTO response = fireStationService.getPersonsCoveredByStation(stationNumber);
 
-            for (final CoveredPersonResponse p : response.getCoveredPersons()) {
-                logger.info("{} {} {} {}", p.getFirstName(), p.getLastName(), p.getAddress(), p.getPhone());
-            }
-            logger.info("Number of adults : {}", response.getNumberOfAdults());
-            logger.info("Number of children : {}", response.getNumberOfChildren());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (final Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        for (final CoveredPersonResponse p : response.getCoveredPersons()) {
+            logger.info("{} {} {} {}", p.getFirstName(), p.getLastName(), p.getAddress(), p.getPhone());
         }
+        logger.info("Number of adults : {}", response.getNumberOfAdults());
+        logger.info("Number of children : {}", response.getNumberOfChildren());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping

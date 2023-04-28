@@ -1,61 +1,47 @@
 package com.safetynet.alerts.endpoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
-import com.safetynet.alerts.dto.resource.CommunityEmailDTO;
-import com.safetynet.alerts.endpoint.CommunityEmailEndpoint;
 import com.safetynet.alerts.service.CommunityEmailService;
+import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestInstance(Lifecycle.PER_CLASS)
+@WebMvcTest(CommunityEmailEndpoint.class)
 public class CommunityEmailIntegrationTest {
 
-    @Autowired
+    @MockBean
     CommunityEmailService service;
 
     @Autowired
-    CommunityEmailEndpoint communityEmail;
+    private MockMvc mockMvc;
 
-    private HttpHeaders httpHeaders;
+    private static NodeConstructorTestUtil nodeConstructor = new NodeConstructorTestUtil();
 
-    @BeforeAll
-    public void setup() {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    @Test
+    public void givenKnownCity_whenGetEmailsFromCity_thenEmailListIsReturned() throws Exception {
+        // given
+        when(service.getEmailAddressesFromCity(anyString())).thenReturn(nodeConstructor.createInitialisedCommunityEmailDTO());
+        // when then
+        this.mockMvc.perform(get("/communityEmail?city=anything").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.emails").isNotEmpty());
     }
 
     @Test
-    public void givenKnownCity_whenGetEmailsFromCity_thenEmailListIsReturned() {
+    public void givenUnknownCity_whenGetEmailsFromCity_thenEmptyListIsReturned() throws Exception {
         // given
-        final String city = "Culver";
-        // when
-        final ResponseEntity<CommunityEmailDTO> response = communityEmail.getEmailsFromCity(city);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getEmailAddresses()).anyMatch(c -> c.contains("jaboyd@email.com"));
-    }
-
-    @Test
-    public void givenUnknownCity_whenGetEmailsFromCity_thenEmptyListIsReturned() {
-        // given
-        final String city = "an unknown city";
-        // when
-        final ResponseEntity<CommunityEmailDTO> response = communityEmail.getEmailsFromCity(city);
-        // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertTrue(response.getBody().getEmailAddresses().isEmpty());
+        when(service.getEmailAddressesFromCity(anyString())).thenReturn(nodeConstructor.createEmptyCommunityEmailDTO());
+        // when then
+        this.mockMvc.perform(get("/communityEmail?city=anything").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
+                jsonPath("$.emails").isEmpty());
     }
 }
