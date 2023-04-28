@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.repo.DataRepository;
 
@@ -38,10 +37,10 @@ public class MedicalRecordService {
     }
 
     public Optional<MedicalRecordsDTO> deleteMedicalRecord(String firstName, String lastName) {
-        final Optional<MedicalRecordsDTO> optionalMedicalRecord = App.getMedicalRecords().stream().filter(m -> m.medicalRecordExists(firstName, lastName))
+        final Optional<MedicalRecordsDTO> optionalMedicalRecord = repo.getAllMedicalRecords().stream().filter(m -> m.medicalRecordExists(firstName, lastName))
                 .findFirst();
         if (optionalMedicalRecord.isPresent()) {
-            App.getMedicalRecords().remove(optionalMedicalRecord.get());
+            repo.getAllMedicalRecords().remove(optionalMedicalRecord.get());
         }
         return optionalMedicalRecord;
     }

@@ -3,6 +3,8 @@ package com.safetynet.alerts.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.safetynet.alerts.dto.node.FireStationsDTO;
+import com.safetynet.alerts.dto.resource.FireStationDTO;
+import com.safetynet.alerts.dto.response.CoveredPersonResponse;
 import com.safetynet.alerts.repo.DataRepository;
-import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.util.JsonDataRepositoryTestUtil;
 import com.safetynet.alerts.util.TestRepository;
 
@@ -30,6 +33,39 @@ public class FireStationServiceUnitTest {
     public void setup() throws Exception {
         TestRepository.jsonDataInitializer();
         service = new FireStationService(repo);
+    }
+
+    @Test
+    public void givenExistingStation_whenGetPersonsCoveredByStation_thenDTOIsAsExpected() {
+        // given
+        final int station = 2;
+        final FireStationDTO expectedDTO = new FireStationDTO();
+        final CoveredPersonResponse person = new CoveredPersonResponse();
+        person.setAddress("15 Culver St");
+        person.setFirstName("Little");
+        person.setLastName("Child");
+        person.setPhone("7777");
+        final List<CoveredPersonResponse> coveredPersons = new ArrayList<>();
+        coveredPersons.add(person);
+        expectedDTO.setCoveredPersons(coveredPersons);
+        expectedDTO.setNumberOfAdults(0);
+        expectedDTO.setNumberOfChildren(1);
+        // when
+        final FireStationDTO actualDTO = service.getPersonsCoveredByStation(station);
+        // then
+        assertThat(actualDTO).usingRecursiveComparison().isEqualTo(expectedDTO);
+    }
+
+    @Test
+    public void givenUnknownStation_whenGetPersonsCoveredByStation_thenDTOIsEmpty() {
+        // given
+        final int unknownStation = 10;
+        // when
+        final FireStationDTO actualDTO = service.getPersonsCoveredByStation(unknownStation);
+        // then
+        assertThat(actualDTO.getCoveredPersons()).isEmpty();
+        assertThat(actualDTO.getNumberOfAdults()).isZero();
+        assertThat(actualDTO.getNumberOfChildren()).isZero();
     }
 
     @Test

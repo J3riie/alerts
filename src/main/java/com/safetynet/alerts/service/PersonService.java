@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.repo.DataRepository;
 
@@ -42,9 +41,9 @@ public class PersonService {
     }
 
     public Optional<PersonsDTO> deletePerson(String firstName, String lastName) {
-        final Optional<PersonsDTO> optionalPerson = App.getPersons().stream().filter(p -> p.personExists(firstName, lastName)).findFirst();
+        final Optional<PersonsDTO> optionalPerson = repo.getAllPersons().stream().filter(p -> p.personExists(firstName, lastName)).findFirst();
         if (optionalPerson.isPresent()) {
-            App.getPersons().remove(optionalPerson.get());
+            repo.getAllPersons().remove(optionalPerson.get());
         }
         return optionalPerson;
     }

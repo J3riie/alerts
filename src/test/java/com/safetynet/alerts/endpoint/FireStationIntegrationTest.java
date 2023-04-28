@@ -39,7 +39,7 @@ public class FireStationIntegrationTest {
     @Test
     public void givenKnownStationNumber_whenGetPersonsCoveredByStation_thenListIsReturned() throws Exception {
         // given
-        when(service.getPersonsCoveredByStation(1)).thenReturn(nodeConstructor.createInitialisedFireStationDTO());
+        when(service.getPersonsCoveredByStation(anyInt())).thenReturn(nodeConstructor.createInitialisedFireStationDTO());
         // when then
         this.mockMvc.perform(get("/firestation?stationNumber=1").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
                 jsonPath("$.person").isNotEmpty());
@@ -48,7 +48,7 @@ public class FireStationIntegrationTest {
     @Test
     public void givenUnknownStationNumber_whenGetPersonsCoveredByStation_thenEmptyListIsReturned() throws Exception {
         // given
-        when(service.getPersonsCoveredByStation(10)).thenReturn(nodeConstructor.createEmptyFireStationDTO());
+        when(service.getPersonsCoveredByStation(anyInt())).thenReturn(nodeConstructor.createEmptyFireStationDTO());
         // when then
         this.mockMvc.perform(get("/firestation?stationNumber=10").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpectAll(status().isOk(),
                 jsonPath("$.person").isEmpty());

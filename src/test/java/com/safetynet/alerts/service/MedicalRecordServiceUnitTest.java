@@ -16,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.repo.DataRepository;
-import com.safetynet.alerts.service.MedicalRecordService;
 import com.safetynet.alerts.util.JsonDataRepositoryTestUtil;
 import com.safetynet.alerts.util.TestRepository;
 
@@ -73,7 +72,7 @@ public class MedicalRecordServiceUnitTest {
     @Test
     public void givenExistingName_whenDeleteMedicalRecord_thenMedicalRecordsSizeDecreases() {
         // given
-        final String firstName = "Jacob";
+        final String firstName = "John";
         final String lastName = "Boyd";
         final int numberOfMedicalRecords = repo.getAllMedicalRecords().size();
         // when

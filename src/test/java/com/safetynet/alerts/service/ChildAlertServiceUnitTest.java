@@ -12,10 +12,10 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.safetynet.alerts.dto.resource.ChildAlertDTO;
 import com.safetynet.alerts.dto.response.ChildResponse;
 import com.safetynet.alerts.dto.response.FamilyResponse;
 import com.safetynet.alerts.repo.DataRepository;
-import com.safetynet.alerts.service.ChildAlertService;
 import com.safetynet.alerts.util.JsonDataRepositoryTestUtil;
 import com.safetynet.alerts.util.TestRepository;
 
@@ -34,68 +34,37 @@ public class ChildAlertServiceUnitTest {
     }
 
     @Test
-    public void givenValidAddress_whenGetFamilyMembersFromAddress_thenFamilyIsReturned() {
+    public void givenExistingAddress_whenGetChildrenAtAddress_thenDTOIsAsExpected() {
         // given
-        final String address = "1509 Culver St";
-        final List<FamilyResponse> expectedFamily = new ArrayList<>();
-        final FamilyResponse member1 = new FamilyResponse();
-        member1.setFirstName("John");
-        member1.setLastName("Boyd");
-        expectedFamily.add(member1);
-        final FamilyResponse member2 = new FamilyResponse();
-        member2.setFirstName("Jacob");
-        member2.setLastName("Boyd");
-        expectedFamily.add(member2);
-        final FamilyResponse member3 = new FamilyResponse();
-        member3.setFirstName("Tenley");
-        member3.setLastName("Boyd");
-        expectedFamily.add(member3);
-        final FamilyResponse member4 = new FamilyResponse();
-        member4.setFirstName("Roger");
-        member4.setLastName("Boyd");
-        expectedFamily.add(member4);
-        final FamilyResponse member5 = new FamilyResponse();
-        member5.setFirstName("Felicia");
-        member5.setLastName("Boyd");
-        expectedFamily.add(member5);
+        final String address = "15 Culver St";
+        final ChildAlertDTO expectedDTO = new ChildAlertDTO();
+        final List<FamilyResponse> family = new ArrayList<>();
+        final FamilyResponse member = new FamilyResponse();
+        member.setFirstName("Little");
+        member.setLastName("Child");
+        family.add(member);
+        final List<ChildResponse> children = new ArrayList<>();
+        final ChildResponse child = new ChildResponse();
+        child.setFirstName("Little");
+        child.setLastName("Child");
+        child.setAge(13);
+        child.setFamily(family);
+        children.add(child);
+        expectedDTO.setChildren(children);
         // when
-        final List<FamilyResponse> actualFamily = service.getFamilyMembersFromAddress(address);
+        final ChildAlertDTO actualDTO = service.getChildrenAtAddress(address);
         // then
-        assertThat(actualFamily).usingRecursiveComparison().isEqualTo(expectedFamily);
+        assertThat(actualDTO).usingRecursiveComparison().isEqualTo(expectedDTO);
     }
 
     @Test
-    public void givenUnknownAddress_whenGetFamilyMembersFromAddress_thenEmptyListIsReturned() {
+    public void givenUnknownAddress_whenGetChildrenAtAddress_thenDTOIsEmpty() {
         // given
-        final String unknownAddress = "an unknown address";
+        final String unknownAddress = "unknown address";
         // when
-        final List<FamilyResponse> family = service.getFamilyMembersFromAddress(unknownAddress);
+        final ChildAlertDTO actualDTO = service.getChildrenAtAddress(unknownAddress);
         // then
-        assertThat(family).isEmpty();
-    }
-
-    @Test
-    public void givenValidFamily_whenGetChildrenFromFamily_thenChildrenAreReturned() {
-        // given
-        final String address = "1509 Culver St";
-        final List<FamilyResponse> family = service.getFamilyMembersFromAddress(address);
-        final List<ChildResponse> expectedChildren = new ArrayList<>();
-        final ChildResponse child1 = new ChildResponse();
-        child1.setFirstName("Tenley");
-        child1.setLastName("Boyd");
-        child1.setAge(11);
-        child1.setFamily(family);
-        expectedChildren.add(child1);
-        final ChildResponse child2 = new ChildResponse();
-        child2.setFirstName("Roger");
-        child2.setLastName("Boyd");
-        child2.setAge(5);
-        child2.setFamily(family);
-        expectedChildren.add(child2);
-        // when
-        final List<ChildResponse> actualChildren = service.getChildrenFromFamily(family);
-        // then
-        assertThat(actualChildren).usingRecursiveComparison().isEqualTo(expectedChildren);
+        assertThat(actualDTO.getChildren()).isEmpty();
     }
 
 }

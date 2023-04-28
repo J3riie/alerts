@@ -14,7 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.repo.DataRepository;
-import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.util.JsonDataRepositoryTestUtil;
 import com.safetynet.alerts.util.TestRepository;
 
@@ -71,7 +70,7 @@ public class PersonServiceUnitTest {
     @Test
     public void givenExistingName_whenDeletePerson_thenPersonsSizeDecreases() {
         // given
-        final String firstName = "Jacob";
+        final String firstName = "John";
         final String lastName = "Boyd";
         final int numberOfPersons = repo.getAllPersons().size();
         // when

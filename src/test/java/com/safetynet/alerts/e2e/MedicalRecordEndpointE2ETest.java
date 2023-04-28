@@ -1,18 +1,14 @@
 package com.safetynet.alerts.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.mockito.Mock;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,19 +22,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.endpoint.MedicalRecordEndpoint;
 import com.safetynet.alerts.service.MedicalRecordService;
 import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MedicalRecordEndpointE2ETest {
 
     @Value(value = "${local.server.port}")
     private int port;
 
-    @Mock
+    @Autowired
     MedicalRecordService service;
 
     @Autowired
@@ -62,9 +58,9 @@ public class MedicalRecordEndpointE2ETest {
     }
 
     @Test
+    @Order(1)
     public void givenValidMedicalRecordAsJson_whenAddMedicalRecord_thenResponseStatusIsCreated() throws Exception {
         // given
-        doNothing().when(service).addMedicalRecord(any());
         final String payload = nodeConstructor.createValidMedicalRecordAsJson();
         final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
         // when
@@ -74,6 +70,7 @@ public class MedicalRecordEndpointE2ETest {
     }
 
     @Test
+    @Order(2)
     public void givenInvalidMedicalRecordAsJson_whenAddMedicalRecord_thenResponseStatusIsBadRequest() throws Exception {
         // given
         final String payload = nodeConstructor.createInvalidMedicalRecordAsJson();
@@ -85,9 +82,9 @@ public class MedicalRecordEndpointE2ETest {
     }
 
     @Test
+    @Order(3)
     public void givenValidParameters_whenModifyMedicalRecord_thenResponseStatusIsNoContent() throws Exception {
         // given
-        when(service.modifyMedicalRecord(anyString(), anyString(), any(), any(), any())).thenReturn(new MedicalRecordsDTO());
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
         final ResponseEntity<Void> response = this.restTemplate
@@ -97,6 +94,7 @@ public class MedicalRecordEndpointE2ETest {
     }
 
     @Test
+    @Order(4)
     public void givenInvalidParameters_whenModifyMedicalRecord_thenResponseStatusIsNotFound() throws Exception {
         // given
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
@@ -108,18 +106,19 @@ public class MedicalRecordEndpointE2ETest {
     }
 
     @Test
+    @Order(5)
     public void givenValidParameters_whenDeleteMedicalRecord_thenResponseStatusIsOk() throws Exception {
         // given
-        when(service.deleteMedicalRecord(anyString(), anyString())).thenReturn(Optional.empty());
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecord?firstName=Jacob&lastName=Boyd",
+        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecord?firstName=John&lastName=Boyd",
                 HttpMethod.DELETE, request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
+    @Order(6)
     public void givenInvalidParameters_whenDeleteMedicalRecord_thenResponseStatusIsNotFound() throws Exception {
         // given
         final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);

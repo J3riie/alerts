@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.safetynet.alerts.App;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
@@ -63,7 +62,7 @@ public class FireService {
 
     private void setPersonsMedicalHistory(List<InhabitantResponse> inhabitants) {
         for (final InhabitantResponse i : inhabitants) {
-            for (final MedicalRecordsDTO m : App.getMedicalRecords()) {
+            for (final MedicalRecordsDTO m : repo.getAllMedicalRecords()) {
                 if (m.getFirstName().equals(i.getFirstName()) && m.getLastName().equals(i.getLastName())) {
                     final MedicalHistory medicationResponse = new MedicalHistory();
                     medicationResponse.setMedications(m.getMedications());
@@ -75,7 +74,7 @@ public class FireService {
     }
 
     private int getFirestationNumberFromAddress(String address) {
-        for (final FireStationsDTO f : App.getFirestations()) {
+        for (final FireStationsDTO f : repo.getAllFirestations()) {
             if (f.getAddress().equals(address)) {
                 return f.getStation();
             }
