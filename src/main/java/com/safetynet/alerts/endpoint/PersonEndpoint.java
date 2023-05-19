@@ -35,6 +35,7 @@ public class PersonEndpoint {
     ResponseEntity<Void> addPerson(@RequestBody @Valid PersonsDTO newPerson) {
         logger.info("Adding {} {} in the data", newPerson.getFirstName(), newPerson.getLastName());
         personService.addPerson(newPerson);
+        logger.info("Person added successfully");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -46,8 +47,10 @@ public class PersonEndpoint {
         logger.info("Modifying {} {}", firstName, lastName);
         try {
             personService.modifyPerson(firstName, lastName, address, city, zip, phone, email);
+            logger.info("Person modified successfully");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (final Exception e) {
+            logger.error("Person requested could not be found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -57,8 +60,10 @@ public class PersonEndpoint {
         logger.info("Deleting {} {} from the data", firstName, lastName);
         final Optional<PersonsDTO> optionalPerson = personService.deletePerson(firstName, lastName);
         if (optionalPerson.isPresent()) {
+            logger.info("Person deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
+        logger.error("Person requested could not be found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

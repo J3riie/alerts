@@ -35,6 +35,7 @@ public class MedicalRecordEndpoint {
     ResponseEntity<Void> addMedicalRecord(@RequestBody @Valid MedicalRecordsDTO newMedicalRecord) {
         logger.info("Adding a new medical record in the data");
         medicalRecordService.addMedicalRecord(newMedicalRecord);
+        logger.info("Medical record added successfully");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -45,8 +46,10 @@ public class MedicalRecordEndpoint {
         logger.info("Modifying {} {}'s medical record", firstName, lastName);
         try {
             medicalRecordService.modifyMedicalRecord(firstName, lastName, birthdate, medications, allergies);
+            logger.info("Medical record modified successfully");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (final Exception e) {
+            logger.error("Medical record requested not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -56,8 +59,10 @@ public class MedicalRecordEndpoint {
         logger.info("Deleting {} {}'s medical record from the data", firstName, lastName);
         final Optional<MedicalRecordsDTO> optionalMedicalRecord = medicalRecordService.deleteMedicalRecord(firstName, lastName);
         if (optionalMedicalRecord.isPresent()) {
+            logger.info("Medical record deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
+        logger.error("Medical record requested not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

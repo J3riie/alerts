@@ -53,6 +53,7 @@ public class FireStationEndpoint {
     ResponseEntity<Void> addFireStation(@RequestBody @Valid FireStationsDTO newStation) {
         logger.info("Adding a new station - address mapping in the data");
         fireStationService.addFireStation(newStation);
+        logger.info("Firestation added successfully");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -61,8 +62,10 @@ public class FireStationEndpoint {
         logger.info("Modifying the station for address {}", address);
         try {
             fireStationService.modifyFireStation(address, station);
+            logger.info("Firestation modified successfully");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (final Exception e) {
+            logger.error("Firestation requested could not be found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -74,17 +77,22 @@ public class FireStationEndpoint {
             logger.info("Deleting the mapping(s) for station {}", station);
             final boolean isPresent = fireStationService.deleteFireStation(station);
             if (isPresent) {
+                logger.info("Firestation deleted successfully");
                 return ResponseEntity.status(HttpStatus.OK).build();
             }
+            logger.error("Firestation requested could not be found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else if (station == null) {
             logger.info("Deleting the mapping for address {}", address);
             final Optional<FireStationsDTO> optionalFirestation = fireStationService.deleteFireStation(address);
             if (optionalFirestation.isPresent()) {
+                logger.info("Firestation deleted successfully");
                 return ResponseEntity.status(HttpStatus.OK).build();
             }
+            logger.error("Address requested could not be found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
+            logger.error("Wrong request parameters");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
