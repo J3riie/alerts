@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -21,11 +21,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.safetynet.alerts.controller.FireStationController;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@WebMvcTest(FireStationEndpoint.class)
+@WebMvcTest(FireStationController.class)
 public class FireStationIntegrationTest {
 
     @MockBean

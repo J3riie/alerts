@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import java.util.Optional;
 
@@ -29,8 +29,8 @@ import jakarta.validation.constraints.Min;
 @RestController
 @RequestMapping(value = "/firestation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
-public class FireStationEndpoint {
-    private static final Logger logger = LoggerFactory.getLogger(FireStationEndpoint.class);
+public class FireStationController {
+    private static final Logger logger = LoggerFactory.getLogger(FireStationController.class);
 
     @Autowired
     private FireStationService fireStationService;

@@ -14,7 +14,7 @@ import com.safetynet.alerts.dto.resource.FloodDTO;
 import com.safetynet.alerts.dto.response.CoveredHouseResponse;
 import com.safetynet.alerts.dto.response.InhabitantResponse;
 import com.safetynet.alerts.dto.response.MedicalHistory;
-import com.safetynet.alerts.repo.DataRepository;
+import com.safetynet.alerts.repository.DataRepository;
 
 @Service
 public class FloodService {

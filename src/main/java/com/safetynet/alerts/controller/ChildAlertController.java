@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ import com.safetynet.alerts.service.ChildAlertService;
 
 @RestController
 @RequestMapping(value = "/childAlert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class ChildAlertEndpoint {
+public class ChildAlertController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChildAlertEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChildAlertController.class);
 
     @Autowired
     ChildAlertService childAlertService;

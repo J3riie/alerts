@@ -28,7 +28,7 @@ import com.safetynet.alerts.util.NodeConstructorTestUtil;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FireStationEndpointE2ETest {
+public class FireStationControllerE2ETest {
 
     @Value(value = "${local.server.port}")
     private int port;

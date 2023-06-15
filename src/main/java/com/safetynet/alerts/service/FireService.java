@@ -13,7 +13,7 @@ import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.resource.FireDTO;
 import com.safetynet.alerts.dto.response.InhabitantResponse;
 import com.safetynet.alerts.dto.response.MedicalHistory;
-import com.safetynet.alerts.repo.DataRepository;
+import com.safetynet.alerts.repository.DataRepository;
 
 @Service
 public class FireService {

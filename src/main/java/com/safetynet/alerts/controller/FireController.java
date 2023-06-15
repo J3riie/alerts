@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,9 @@ import com.safetynet.alerts.service.FireService;
 
 @RestController
 @RequestMapping(value = "/fire", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class FireEndpoint {
+public class FireController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FireEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(FireController.class);
 
     @Autowired
     FireService fireService;

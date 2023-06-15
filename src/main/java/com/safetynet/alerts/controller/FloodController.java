@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ import com.safetynet.alerts.service.FloodService;
 
 @RestController
 @RequestMapping(value = "/flood", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class FloodEndpoint {
+public class FloodController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FloodEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(FloodController.class);
 
     @Autowired
     FloodService floodService;

@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import java.util.Optional;
 
@@ -25,8 +25,8 @@ import jakarta.validation.Valid;
 @RestController
 @Validated
 @RequestMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class PersonEndpoint {
-    private static final Logger logger = LoggerFactory.getLogger(PersonEndpoint.class);
+public class PersonController {
+    private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
     @Autowired
     private PersonService personService;
