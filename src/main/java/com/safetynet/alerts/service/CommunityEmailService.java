@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.resource.CommunityEmailDTO;
-import com.safetynet.alerts.repo.DataRepository;
+import com.safetynet.alerts.repository.DataRepository;
 
 @Service
 public class CommunityEmailService {

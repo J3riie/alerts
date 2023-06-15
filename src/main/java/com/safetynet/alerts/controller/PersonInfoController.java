@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,9 @@ import com.safetynet.alerts.service.PersonInfoService;
 
 @RestController
 @RequestMapping(value = "/personInfo", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class PersonInfoEndpoint {
+public class PersonInfoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersonInfoEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersonInfoController.class);
 
     @Autowired
     PersonInfoService personInfoService;

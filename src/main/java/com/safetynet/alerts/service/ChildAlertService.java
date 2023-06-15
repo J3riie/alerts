@@ -12,7 +12,7 @@ import com.safetynet.alerts.dto.node.PersonsDTO;
 import com.safetynet.alerts.dto.resource.ChildAlertDTO;
 import com.safetynet.alerts.dto.response.ChildResponse;
 import com.safetynet.alerts.dto.response.FamilyResponse;
-import com.safetynet.alerts.repo.DataRepository;
+import com.safetynet.alerts.repository.DataRepository;
 
 @Service
 public class ChildAlertService {

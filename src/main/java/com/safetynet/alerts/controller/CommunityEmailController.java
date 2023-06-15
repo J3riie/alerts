@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ import com.safetynet.alerts.service.CommunityEmailService;
 
 @RestController
 @RequestMapping(value = "/communityEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public class CommunityEmailEndpoint {
+public class CommunityEmailController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommunityEmailEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommunityEmailController.class);
 
     @Autowired
     CommunityEmailService communityEmailService;

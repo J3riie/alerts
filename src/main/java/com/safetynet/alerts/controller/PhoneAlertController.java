@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +20,9 @@ import jakarta.validation.constraints.Min;
 @RestController
 @RequestMapping(value = "/phoneAlert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
-public class PhoneAlertEndpoint {
+public class PhoneAlertController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PhoneAlertEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(PhoneAlertController.class);
 
     @Autowired
     PhoneAlertService phoneAlertService;

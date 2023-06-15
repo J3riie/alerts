@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.safetynet.alerts.dto.resource.PhoneAlertDTO;
-import com.safetynet.alerts.repo.DataRepository;
+import com.safetynet.alerts.repository.DataRepository;
 import com.safetynet.alerts.util.JsonDataRepositoryTestUtil;
 import com.safetynet.alerts.util.TestRepository;
 

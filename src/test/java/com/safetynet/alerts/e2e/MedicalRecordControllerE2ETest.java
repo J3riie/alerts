@@ -22,20 +22,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.endpoint.PersonEndpoint;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.controller.MedicalRecordController;
+import com.safetynet.alerts.service.MedicalRecordService;
 import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PersonEndpointE2ETest {
+public class MedicalRecordControllerE2ETest {
 
     @Value(value = "${local.server.port}")
     private int port;
 
     @Autowired
-    PersonService service;
+    MedicalRecordService service;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -44,7 +44,7 @@ public class PersonEndpointE2ETest {
     ObjectMapper objectMapper;
 
     @Autowired
-    PersonEndpoint personEndpoint;
+    MedicalRecordController medicalRecordEndpoint;
 
     private NodeConstructorTestUtil nodeConstructor;
 
@@ -59,60 +59,59 @@ public class PersonEndpointE2ETest {
 
     @Test
     @Order(1)
-    public void givenValidPersonAsJson_whenAddPerson_thenResponseStatusIsCreated() throws Exception {
+    public void givenValidMedicalRecordAsJson_whenAddMedicalRecord_thenResponseStatusIsCreated() throws Exception {
         // given
-        final String payload = nodeConstructor.createValidPersonAsJson();
+        final String payload = nodeConstructor.createValidMedicalRecordAsJson();
         final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/person", request, Void.class);
+        final ResponseEntity<Void> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/medicalRecord", request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
     @Order(2)
-    public void givenInvalidPersonAsJson_whenAddPerson_thenResponseStatusIsBadRequest() throws Exception {
+    public void givenInvalidMedicalRecordAsJson_whenAddMedicalRecord_thenResponseStatusIsBadRequest() throws Exception {
         // given
-        final String payload = nodeConstructor.createInvalidPersonAsJson();
+        final String payload = nodeConstructor.createInvalidMedicalRecordAsJson();
         final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/person", request, Void.class);
+        final ResponseEntity<Void> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/medicalRecord", request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     @Order(3)
-    public void givenValidParameters_whenModifyPerson_thenResponseStatusIsNoContent() throws Exception {
+    public void givenValidParameters_whenModifyMedicalRecord_thenResponseStatusIsNoContent() throws Exception {
         // given
-        final HttpEntity<String> request = new HttpEntity<String>(httpHeaders);
+        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
         final ResponseEntity<Void> response = this.restTemplate
-                .exchange("http://localhost:" + port + "/api/person?firstName=John&lastName=Boyd&address=new address", HttpMethod.PUT, request, Void.class);
+                .exchange("http://localhost:" + port + "/api/medicalRecord?firstName=John&lastName=Boyd&allergies=pollen", HttpMethod.PUT, request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
     @Order(4)
-    public void givenInvalidParameters_whenModifyPerson_thenResponseStatusIsNotFound() throws Exception {
+    public void givenInvalidParameters_whenModifyMedicalRecord_thenResponseStatusIsNotFound() throws Exception {
         // given
-        final String payload = nodeConstructor.createInvalidPersonAsJson();
-        final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
+        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate
-                .exchange("http://localhost:" + port + "/api/person?firstName=Invalid&lastName=Name&address=new address", HttpMethod.PUT, request, Void.class);
+        final ResponseEntity<Void> response = this.restTemplate.exchange(
+                "http://localhost:" + port + "/api/medicalRecordfirstName=Robin&lastName=Hugues&allergies=pollen", HttpMethod.PUT, request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     @Order(5)
-    public void givenValidParameters_whenDeletePerson_thenResponseStatusIsOk() throws Exception {
+    public void givenValidParameters_whenDeleteMedicalRecord_thenResponseStatusIsOk() throws Exception {
         // given
-        final HttpEntity<String> request = new HttpEntity<String>(httpHeaders);
+        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/person?firstName=Little&lastName=Child",
+        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecord?firstName=John&lastName=Boyd",
                 HttpMethod.DELETE, request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -120,12 +119,11 @@ public class PersonEndpointE2ETest {
 
     @Test
     @Order(6)
-    public void givenInvalidParameters_whenDeletePerson_thenResponseStatusIsNotFound() throws Exception {
+    public void givenInvalidParameters_whenDeleteMedicalRecord_thenResponseStatusIsNotFound() throws Exception {
         // given
-        final String payload = nodeConstructor.createInvalidPersonAsJson();
-        final HttpEntity<String> request = new HttpEntity<String>(payload, httpHeaders);
+        final HttpEntity<Void> request = new HttpEntity<Void>(httpHeaders);
         // when
-        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/person?firstName=Invalid&lastName=Name",
+        final ResponseEntity<Void> response = this.restTemplate.exchange("http://localhost:" + port + "/api/medicalRecordfirstName=Robin&lastName=Hugues",
                 HttpMethod.DELETE, request, Void.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

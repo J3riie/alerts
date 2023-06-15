@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -13,10 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.safetynet.alerts.controller.PersonInfoController;
 import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@WebMvcTest(PersonInfoEndpoint.class)
+@WebMvcTest(PersonInfoController.class)
 public class PersonInfoIntegrationTest {
 
     @MockBean

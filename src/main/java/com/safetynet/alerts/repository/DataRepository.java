@@ -1,4 +1,4 @@
-package com.safetynet.alerts.repo;
+package com.safetynet.alerts.repository;
 
 import java.util.List;
 

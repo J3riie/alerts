@@ -1,4 +1,4 @@
-package com.safetynet.alerts.endpoint;
+package com.safetynet.alerts.controller;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -13,10 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.safetynet.alerts.controller.FloodController;
 import com.safetynet.alerts.service.FloodService;
 import com.safetynet.alerts.util.NodeConstructorTestUtil;
 
-@WebMvcTest(FloodEndpoint.class)
+@WebMvcTest(FloodController.class)
 public class FloodIntegrationTest {
 
     @MockBean

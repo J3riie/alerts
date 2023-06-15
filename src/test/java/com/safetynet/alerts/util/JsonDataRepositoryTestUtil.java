@@ -5,7 +5,7 @@ import java.util.List;
 import com.safetynet.alerts.dto.node.FireStationsDTO;
 import com.safetynet.alerts.dto.node.MedicalRecordsDTO;
 import com.safetynet.alerts.dto.node.PersonsDTO;
-import com.safetynet.alerts.repo.DataRepository;
+import com.safetynet.alerts.repository.DataRepository;
 
 public class JsonDataRepositoryTestUtil implements DataRepository {
 
