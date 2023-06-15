@@ -2,7 +2,6 @@ package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,11 @@ public class PersonInfoController {
 
     private static final Logger logger = LoggerFactory.getLogger(PersonInfoController.class);
 
-    @Autowired
-    PersonInfoService personInfoService;
+    private final PersonInfoService personInfoService;
+
+    public PersonInfoController(PersonInfoService personInfoService) {
+        this.personInfoService = personInfoService;
+    }
 
     @GetMapping
     ResponseEntity<PersonInfoDTO> getPersonsWithNames(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {

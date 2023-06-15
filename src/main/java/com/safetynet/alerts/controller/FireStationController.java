@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +31,11 @@ import jakarta.validation.constraints.Min;
 public class FireStationController {
     private static final Logger logger = LoggerFactory.getLogger(FireStationController.class);
 
-    @Autowired
-    private FireStationService fireStationService;
+    private final FireStationService fireStationService;
+
+    public FireStationController(FireStationService fireStationService) {
+        this.fireStationService = fireStationService;
+    }
 
     @GetMapping
     ResponseEntity<FireStationDTO> getPersonsCoveredByStation(
