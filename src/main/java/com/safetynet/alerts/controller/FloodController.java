@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,11 @@ public class FloodController {
 
     private static final Logger logger = LoggerFactory.getLogger(FloodController.class);
 
-    @Autowired
-    FloodService floodService;
+    private final FloodService floodService;
+
+    public FloodController(FloodService floodService) {
+        this.floodService = floodService;
+    }
 
     @GetMapping(value = "/stations")
     ResponseEntity<FloodDTO> getInfoFromPersonsCoveredByStations(@RequestParam(name = "stations") List<Integer> stations) {

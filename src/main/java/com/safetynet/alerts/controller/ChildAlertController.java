@@ -2,7 +2,6 @@ package com.safetynet.alerts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,11 @@ public class ChildAlertController {
 
     private static final Logger logger = LoggerFactory.getLogger(ChildAlertController.class);
 
-    @Autowired
-    ChildAlertService childAlertService;
+    private final ChildAlertService childAlertService;
+
+    public ChildAlertController(ChildAlertService childAlertService) {
+        this.childAlertService = childAlertService;
+    }
 
     @GetMapping
     ResponseEntity<ChildAlertDTO> getChildrenListAtAddress(@RequestParam(name = "address") String address) {
